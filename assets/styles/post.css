@@ -1,13 +1,13 @@
 article.post {
-  width: var(--post-width);
+  max-width: var(--post-width);
   margin: auto;
   padding: 10px;
   text-align: justify;
   text-justify: inter-word; }
   article.post.portfolio, article.post.cv {
-    width: var(--main-width); }
+    max-width: var(--main-width); }
   article.post .kg-card {
-    width: 100%;
+    max-width: 100%;
     margin: 3em 0; }
   article.post .kg-image-card .kg-image {
     max-width: 100%; }
@@ -15,9 +15,9 @@ article.post {
     text-align: center; }
     article.post .kg-embed-card iframe {
       height: 400px !important;
-      width: 100% !important; }
+      max-width: 100% !important; }
   article.post .kg-gallery-card .kg-gallery-row {
-    width: 100%;
+    max-width: 100%;
     display: flex;
     flex-direction: row;
     justify-content: center; }
@@ -28,7 +28,7 @@ article.post {
         margin: 1.5em auto;
         max-width: 1040px;
         height: auto;
-        width: calc( 100% - 10px); }
+        width: calc( 100vw - 10px); }
   article.post .kg-bookmark-card {
     background-color: var(--secondary-bg-color);
     border: 1px solid var(--secondary-fg-color); }
@@ -67,7 +67,7 @@ article.post {
           left: 0; }
 
 article.post .cover {
-  width: 100%; }
+  max-width: 100%; }
 
 article.post .separator path {
   fill: var(--main-fg-color); }
@@ -75,4 +75,4 @@ article.post .separator path {
 #disqus_thread {
   margin: auto;
   padding: 100px 0;
-  width: var(--secondary-width); }
+  max-width: var(--secondary-width); }

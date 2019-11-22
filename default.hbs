@@ -3,6 +3,7 @@
     
 <head>
     <script src="{{ asset "scripts/macy.min.js"}}"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cash/4.1.5/cash.min.js"></script>
     <link rel="stylesheet" href="{{ asset "styles/normalize.css"}}"/>
     <link rel="stylesheet" href="{{ asset "styles/main.css"}}"/>
@@ -20,14 +21,17 @@
             <a href="/" class="logo" style="background-image: url({{@site.logo}});"></a>
             <div class="float-right">
                 {{{block "navbar"}}}
-
-                <div id="themeswitcher">
-                    <div id="themeswitcher-icon"></div>
+                <div id="menuicon">
+                </div>
+                <div id="fullscreenmenu">
+                    {{navigation}}
+                    <hr>
+                    {{> social-icons}}
                 </div>
             </div>
         </div>
     </nav>
-    {{{block "header"}}}
+    {{{block "header"}}} 
 
     {{{block "content"}}}
 
@@ -42,30 +46,25 @@
         $(window).on('scroll', function () {
             window.pageYOffset > 1 ? $('body').addClass('scrolled') : $('body').removeClass('scrolled');
         });
-        var animData = {
-            wrapper: document.getElementById('themeswitcher-icon'),
+
+        var menuData = {
+            wrapper: document.getElementById('menuicon'),
             animType: 'svg',
             loop: false,
             prerender: true,
             autoplay: false,
-            path: "{{ asset "images/daynight.json.png"}}"
+            path: "{{ asset "images/menuclose.json.png"}}"
         };
         // does not work for now
-        //var anim = bodymovin.loadAnimation(animData);
+        var anim = bodymovin.loadAnimation(menuData);
 
-        if ($('body').hasClass('light')) {
-        anim.goToAndStop(0, true);
-        } else {
-        anim.goToAndStop(15, true);
-        }
+        $('#menuicon').on('click', function () {
+            $('body').toggleClass('menuopened');
 
-        $('#themeswitcher').on('click', function () {
-        $('body').toggleClass('light');
-
-        if ($('body').hasClass('light')) {
-            anim.playSegments([15,0], true);
-        } else {
+        if ($('body').hasClass('menuopened')) {
             anim.playSegments([0, 15], true);
+        } else {
+            anim.playSegments([15,0], true);
         }
         });
     </script>

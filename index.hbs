@@ -1,10 +1,5 @@
 {{!< default}}
 
-{{#contentFor "navbar"}}
-    {{navigation}}
-    {{> social-icons}}
-{{/contentFor}}
-
 {{#contentFor "header"}}
     <header>
         <div class="header-inner">
@@ -26,40 +21,38 @@
         header {
             background: transparent url({{@site.cover_image}}) center bottom/cover repeat scroll;
         }
-        nav.topbar::after {
-            background: transparent url({{@site.cover_image}}) center top/cover repeat scroll;
-            background-position-y: -436px;
-        }
     </style>
 {{/contentFor}}
 
 {{#contentFor "content"}}
-    <section class="posts-index">
-        {{#foreach posts}}
-            <article>
-                <div class="thumbnail">
-                    <img src="{{feature_image}}" alt="" style="width: 100%">
-                </div>
-                <section class="details">
-                    <div class="tags">
-                        {{tags}}
+    <div class="index-wrapper">
+        <section class="posts-index">
+            {{#foreach posts}}
+                <article>
+                    <div class="thumbnail">
+                        <img src="{{feature_image}}" alt="" style="width: 100%">
                     </div>
-                    <a href="{{url}}" class="title">
-                        {{title}}
-                    </a>
-                    <div class="date">
-                        {{date}}
-                    </div>
-                    <p class="excerpt">
-                        {{excerpt words="26"}}
-                    </p>
-                    <a href="{{url}}" class="read-more">
-                        Czytaj dalej
-                    </a>
-                </section>
-            </article>
-        {{/foreach}}
-    </section>
+                    <section class="details">
+                        <div class="tags">
+                            {{tags}}
+                        </div>
+                        <a href="{{url}}" class="title">
+                            {{title}}
+                        </a>
+                        <div class="date">
+                            {{date}}
+                        </div>
+                        <p class="excerpt">
+                            {{excerpt words="26"}}
+                        </p>
+                        <a href="{{url}}" class="read-more">
+                            Czytaj dalej
+                        </a>
+                    </section>
+                </article>
+            {{/foreach}}
+        </section>
+    </div>
     <section class='pagination'>
         {{pagination}}
     </section>
@@ -70,11 +63,12 @@
         Macy.init({
             container: document.querySelector('.posts-index'),
             trueOrder: true,
-            columns: 3,
+            mobileFirst: true,
             margin: 24,
+            columns: 1,
             breakAt: {
-                520: 2,
-                400: 1
+                940: 3,
+                520: 2
             }
         });
     </script>

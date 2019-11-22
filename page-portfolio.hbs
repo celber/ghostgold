@@ -4,27 +4,28 @@
     <link rel="stylesheet" href="{{ asset "styles/post.css"}}"/>
 {{/contentFor}}
 
-{{#contentFor "navbar"}}
-    {{navigation}}
-    {{> social-icons}}
-{{/contentFor}}
-
 {{#contentFor "content"}}
     {{#post}}
             <div class="mb-80"></div>
             <article class="portfolio {{post_class}}">
-            {{content}}
-
+                <div class="content">
+                    {{content}}
+                </div>
             </article>
             <div class="mb-80"></div>
     {{/post}}
 
     <script type="application/javascript">
         Macy({
-            container: document.querySelector('.portfolio'),
+            container: document.querySelector('.portfolio .content'),
             trueOrder: true,
-            columns: 3,
+            mobileFirst: true,
             margin: 24,
+            columns: 1,
+            breakAt: {
+                940: 3,
+                520: 2
+            }
         });
     </script>
 {{/contentFor}}

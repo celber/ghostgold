@@ -5,17 +5,14 @@
     <link rel="stylesheet" href="{{ asset "styles/cv.css"}}"/>
 {{/contentFor}}
 
-{{#contentFor "navbar"}}
-    {{navigation}}
-    {{> social-icons}}
-{{/contentFor}}
 
 {{#contentFor "content"}}
     {{#post}}
             <div class="mb-80"></div>
-            <article class="cvnvm {{post_class}}">
-            {{content}}
-
+            <article class="cv {{post_class}}">
+                <div class="content">
+                    {{content}}
+                </div>
             </article>
             <div class="mb-80"></div>
     {{/post}}

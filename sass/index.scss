@@ -1,13 +1,17 @@
 
 @import url('https://fonts.googleapis.com/css?family=Playfair+Display&display=swap');
+@import 'mixins';
 
 header {
   height: 450px;
 
+  margin-top: -75px;
+  padding-top: 75px;
+
   .header-inner {
     margin: auto;
-    padding: 130px 0 100px;
-    width: var(--main-width);
+    padding: 57px 20px 100px;
+    max-width: var(--main-width);
 
     .name {
       color: var(--gold);
@@ -27,7 +31,7 @@ header {
     .page {
       font-size: 18px;
       font-weight: 400;
-      padding-top: 5px;
+      padding-top: 25px;
     }
 
     .separator {
@@ -60,13 +64,18 @@ header {
 }
 
 
-.posts-index {
+.index-wrapper {
+  padding: 20px;
+
+  .posts-index {
     margin: 100px auto 50px auto;
+    max-width: 99%;
     width: var(--secondary-width);
+  }
 }
 
 .pagination {
-  width: var(--secondary-width);
+  max-width: var(--secondary-width);
   margin: 40px auto;
   text-align: center;
 
@@ -82,6 +91,8 @@ header {
     background-color: var(--main-fg-color);
   }
 }
+
+
 
 .posts-index article {
     background-color: var(--secondary-bg-color);

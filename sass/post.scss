@@ -1,16 +1,16 @@
 article.post {
-    width: var(--post-width);
+    max-width: var(--post-width);
     margin: auto;
     padding: 10px;
     text-align: justify;
     text-justify: inter-word;
 
     &.portfolio, &.cv {
-        width: var(--main-width);
+        max-width: var(--main-width);
     }
 
     .kg-card {
-        width: 100%;
+        max-width: 100%;
         margin: 3em 0;
     }
 
@@ -24,13 +24,13 @@ article.post {
         text-align: center;
         iframe {
             height: 400px!important;
-            width: 100%!important;
+            max-width: 100%!important;
         }
     }
 
     .kg-gallery-card {
         .kg-gallery-row {
-            width: 100%;
+            max-width: 100%;
             display: flex;
             flex-direction: row;
             justify-content: center;
@@ -42,7 +42,7 @@ article.post {
                     margin: 1.5em auto;
                     max-width: 1040px;
                     height: auto;
-                    width: calc( 100% - 10px );
+                    width: calc( 100vw - 10px );
                 }
             }
         }
@@ -99,7 +99,7 @@ article.post {
 
 article.post {
     .cover {
-        width: 100%;
+        max-width: 100%;
     }
 
     .separator path {
@@ -113,5 +113,5 @@ article.post {
 #disqus_thread {
     margin: auto;
     padding: 100px 0;
-    width: var(--secondary-width);
+    max-width: var(--secondary-width);
 }
