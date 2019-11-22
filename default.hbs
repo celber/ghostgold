@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+    
+<head>
+    <script src="{{ asset "scripts/macy.min.js"}}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cash/4.1.5/cash.min.js"></script>
+    <link rel="stylesheet" href="{{ asset "styles/normalize.css"}}"/>
+    <link rel="stylesheet" href="{{ asset "styles/main.css"}}"/>
+    <link rel="stylesheet" href="{{ asset "styles/index.css"}}"/>
+    <link rel="stylesheet" href="{{ asset "styles/fontello.css"}}"/>
+    <title>
+        {{meta_title}}
+    </title>
+    {{{block "head"}}}
+    {{ghost_head}} 
+</head>
+<body class="{{body_class}}">
+    <nav class="topbar">
+        <div class="nav-inner">
+            <a href="/" class="logo" style="background-image: url({{@site.logo}});"></a>
+            <div class="float-right">
+                {{{block "navbar"}}}
+
+                <div id="themeswitcher">
+                    <div id="themeswitcher-icon"></div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    {{{block "header"}}}
+
+    {{{block "content"}}}
+
+    <footer>
+        {{> footer}}
+    </footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.5.9/lottie.min.js" integrity="sha256-Z6O4M7tqzCtU4AEYZT3+moexyqFde5vZNka/gcaixa0=" crossorigin="anonymous"></script>
+    {{{block "scripts"}}}
+
+</div>
+    <script type="application/javascript">
+        $(window).on('scroll', function () {
+            window.pageYOffset > 1 ? $('body').addClass('scrolled') : $('body').removeClass('scrolled');
+        });
+        var animData = {
+            wrapper: document.getElementById('themeswitcher-icon'),
+            animType: 'svg',
+            loop: false,
+            prerender: true,
+            autoplay: false,
+            path: "{{ asset "images/daynight.json.png"}}"
+        };
+        // does not work for now
+        //var anim = bodymovin.loadAnimation(animData);
+
+        if ($('body').hasClass('light')) {
+        anim.goToAndStop(0, true);
+        } else {
+        anim.goToAndStop(15, true);
+        }
+
+        $('#themeswitcher').on('click', function () {
+        $('body').toggleClass('light');
+
+        if ($('body').hasClass('light')) {
+            anim.playSegments([15,0], true);
+        } else {
+            anim.playSegments([0, 15], true);
+        }
+        });
+    </script>
+    {{ghost_foot}}
+</body>
+</html>

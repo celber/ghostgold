@@ -1,0 +1,25 @@
+
+
+<nav id="pagination-container" role="navigation">
+    {{!-- {{#if prev}}
+        <a class="newer-posts" href="{{page_url prev}}">&larr; Newer Posts</a>
+    {{/if}}
+    <span class="page-number">Page {{page}} of {{pages}}</span>
+    {{#if next}}
+        <a class="older-posts" href="{{page_url next}}">Older Possts &rarr;</a>
+    {{/if}} --}}
+</nav>
+
+
+<script type="application/javascript">
+    var i=1;
+    var paginationEl = document.getElementById('pagination-container');
+    for (;i<= {{pages}};++i) {
+        if (i == {{page}}) {
+            paginationEl.innerHTML += '<a class="page-number active-page" href="/page/'+i+'">'+i+'</a>';
+        } else {
+            paginationEl.innerHTML += '<a class="page-number" href="/page/'+i+'">'+i+'</a>';
+        }
+    }
+
+</script>

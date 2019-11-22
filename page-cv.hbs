@@ -1,0 +1,22 @@
+{{!< default}}
+
+{{#contentFor "head"}}
+    <link rel="stylesheet" href="{{ asset "styles/post.css"}}"/>
+    <link rel="stylesheet" href="{{ asset "styles/cv.css"}}"/>
+{{/contentFor}}
+
+{{#contentFor "navbar"}}
+    {{navigation}}
+    {{> social-icons}}
+{{/contentFor}}
+
+{{#contentFor "content"}}
+    {{#post}}
+            <div class="mb-80"></div>
+            <article class="cvnvm {{post_class}}">
+            {{content}}
+
+            </article>
+            <div class="mb-80"></div>
+    {{/post}}
+{{/contentFor}}

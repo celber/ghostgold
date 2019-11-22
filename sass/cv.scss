@@ -1,0 +1,48 @@
+.flex-row {
+    display: flex;
+    flex-direction: row;
+
+    flex-wrap:wrap;
+    justify-content:flex-start;
+    align-items:stretch;
+
+
+    & > div {
+        display: block;
+        width: calc(50% - 10px);
+    } 
+}
+
+.progress-item {
+    padding: 5px;
+
+    .label {
+        margin: 2px;
+        margin-bottom: 3px;
+        display: block;
+        font-size: 13px;
+        
+    }
+
+    .ui-label {
+        text-transform: uppercase;
+        color: var(--secondary-fg-color);
+        position: absolute;
+        right: 0;
+        margin-right: 12px;
+        white-space: nowrap;
+        bottom: 100%;
+    }
+
+    .progress-inner {
+        margin: 2px;
+        background-color: var(--main-fg-color);
+    }
+
+    .progress-value {
+        padding: 4px;
+        font-size: 15px;
+        position: relative;
+        max-width: 99%;
+    }
+}
