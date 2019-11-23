@@ -5,6 +5,10 @@ article.post {
     text-align: justify;
     text-justify: inter-word;
 
+    p {
+        line-height: 1.5em;
+    }
+
     &.portfolio, &.cv {
         max-width: var(--main-width);
     }
