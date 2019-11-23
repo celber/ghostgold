@@ -7,6 +7,9 @@ header {
     margin: auto;
     padding: 57px 20px 100px;
     max-width: var(--main-width); }
+    @media (min-width: 768px) {
+      header .header-inner {
+        padding: 150px 60px 100px; } }
     header .header-inner .name {
       color: var(--gold);
       font-family: 'Playfair Display', serif;

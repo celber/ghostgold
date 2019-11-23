@@ -46,6 +46,10 @@ nav.topbar {
   position: sticky;
   top: 0;
   z-index: 10; }
+  nav.topbar ul.nav, nav.topbar .social-icons {
+    display: none; }
+  nav.topbar #fullscreenmenu ul.nav, nav.topbar #fullscreenmenu .social-icons {
+    display: inline-block !important; }
 
 nav.topbar::after {
   transition: background-color .5s ease;
@@ -63,6 +67,12 @@ nav.topbar::after {
   position: relative;
   padding: 10px 40px;
   max-width: var(--main-width); }
+
+@media (min-width: 768px) {
+  #fullscreenmenu, #menuicon {
+    display: none !important; }
+  .topbar ul.nav, .topbar .social-icons {
+    display: inline-block !important; } }
 
 #fullscreenmenu {
   transition: background-color .5s ease;

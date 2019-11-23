@@ -4,6 +4,30 @@
     <link rel="stylesheet" href="{{ asset "styles/post.css"}}"/>
 {{/contentFor}}
 
+{{#contentFor "header"}}
+    <header>
+        <div class="header-inner">
+            <div class="description">
+                {{@site.description}}
+            </div>
+            <div class="name">
+                {{@site.title}}
+            </div>
+            <div class="page">
+                PORTFOLIO
+            </div>
+            <div class="separator">
+
+            </div>
+        </div>
+    </header>
+    <style>
+        header {
+            background: transparent url({{@site.cover_image}}) center bottom/cover repeat scroll;
+        }
+    </style>
+{{/contentFor}}
+
 {{#contentFor "content"}}
     {{#post}}
             <div class="mb-80"></div>

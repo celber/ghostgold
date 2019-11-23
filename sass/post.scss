@@ -1,7 +1,7 @@
 article.post {
     max-width: var(--post-width);
     margin: auto;
-    padding: 10px;
+    padding: 30px;
     text-align: justify;
     text-justify: inter-word;
 
@@ -112,6 +112,6 @@ article.post {
 
 #disqus_thread {
     margin: auto;
-    padding: 100px 0;
+    padding: 100px 20px;
     max-width: var(--secondary-width);
 }
