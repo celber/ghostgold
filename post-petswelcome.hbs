@@ -1,0 +1,4014 @@
+{{!< default}}
+
+{{#contentFor "head"}}
+ <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+   integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+   crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+   integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+   crossorigin=""></script>
+    <link rel="stylesheet" href="{{ asset "styles/post.css"}}"/>
+
+    <link rel="stylesheet" href="//unpkg.com/leaflet-gesture-handling/dist/leaflet-gesture-handling.min.css" type="text/css">
+<script src="//unpkg.com/leaflet-gesture-handling"></script>
+{{/contentFor}}
+
+{{#contentFor "header"}}
+    <header>
+        <div class="header-inner">
+            <div class="description">
+                {{@site.description}}
+            </div>
+            <div class="name">
+                {{@site.title}}
+            </div>
+            <div class="page">
+                BLOG
+            </div>
+            <div class="separator">
+
+            </div>
+        </div>
+    </header>
+    <style>
+        header {
+            background: transparent url({{@site.cover_image}}) center bottom/cover repeat scroll;
+        }
+
+nav.topbar {
+z-index: 1999;
+}
+
+        .category-toggle {
+            display: inline-block;
+            padding: 17px;
+            padding-left: 45px;
+            margin: 5px;
+            border-radius: 40px;
+            opacity: .5;
+            background-color: rgb(45, 46, 44);
+            position: relative;
+        }
+
+        .category-toggle.enabled {
+            opacity: 1;
+        }
+
+        .category-toggle::before {
+            left: 20px;
+            background-color: rgb(27, 27, 27);
+            content: " ";
+            border-radius: 20px;
+            position: absolute;
+            display: block;
+            width: 10px;
+            height: 10px;
+            top: 22px;
+        }
+
+        .category-toggle.enabled::before {
+            background-color: rgb(61, 194, 27);
+        }
+
+        #places {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: flex-start;
+            align-content: flex-start;
+            text-align: left;
+            padding: 0;
+        }
+
+        .place {
+            width: 28%;
+            height: 80px;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 5px;
+            background-color: rgb(45, 46, 44);
+        }
+
+        @media (max-width: 768px) {
+            .place {
+                width: 40%;
+            }
+        }
+        @media (max-width: 576px) {
+            .place {
+                width: 90%;
+            }
+        }
+
+
+
+        .place .category {
+            color: var(--gold);
+            text-transform: uppercase;
+            font-size: .9rem;
+        }
+
+        .place .name {
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .place .address {
+            font-size: 0.7rem;
+        }
+
+        .place.recommended {
+            background-color: var(--gold);
+
+            color: black;
+        }
+
+        .place.recommended .category {
+            color: white;
+        }
+
+        .hidden {display: none;}
+    </style>
+{{/contentFor}}
+
+{{#contentFor "content"}}
+            <article class="portfolio {{post_class}}">
+                <div class="content">
+
+						{{#post}}
+
+            			<h1>{{title}}</h1>
+						{{content}}
+
+    					{{/post}}
+						<br><br>
+                        <div class='category-toggle enabled' data-filter='restaurant'>Restauracje</div>
+                        <div class='category-toggle enabled' data-filter='cafe'>Kawiarnie</div>
+                        <div class='category-toggle enabled' data-filter='pub'>Bary</div>
+                        <div class='category-toggle enabled' data-filter='hotel'>Hotele</div>
+                        <div class='category-toggle enabled' data-filter='shop'>Sklepy</div>
+                        <div class='category-toggle enabled' data-filter='other'>Inne</div>
+
+                        <br><br>
+                        <div id="mapid" style="height: calc(100vh - 150px); width: 100%"></div>
+
+                        <ul id="places">
+
+                        </ul>
+                </div>
+            </article>
+
+        <script type="application/javascript">
+        window.places = [
+        {
+		"name": "Amorinio.pl Ice Cream &amp; Grand Cafe",
+		"location": {
+			"lat": 51.1104352,
+			"lng": 17.0335755
+		},
+		"category": "cafe",
+        "recommended": true,
+		"address": " ul. Wita Stwosza 1-2"
+	},	{
+		"name": "Le Bistro Parisien",
+		"location": {
+			"lat": 51.1127536,
+			"lng": 17.031929
+		},
+        "recommended": true,
+		"category": "restaurant",
+		"address": " ul. Nożownicza 1d"
+	},{
+		"name": "Charlotte - chleb i wino",
+		"location": {
+			"lat": 51.1084934,
+			"lng": 17.0239377
+		},
+        "recommended": true,
+		"category": "cafe, restaurant",
+		"address": " ul. św. Antoniego 2/4"
+	},
+	{
+		"name": "74 Punkt Ksero C.H. Arena",
+		"location": {
+			"lat": 51.094983,
+			"lng": 17.027943
+		},
+		"category": "other",
+		"address": " ul. Komandorska 66"
+	},
+	{
+		"name": "74 Punkt Ksero",
+		"location": {
+			"lat": 51.12248630000001,
+			"lng": 17.0476043
+		},
+		"category": "other",
+		"address": " ul. Kluczborska 26B"
+	},
+	{
+		"name": "ADORO Instytut Piękna",
+		"location": {
+			"lat": 51.1024393,
+			"lng": 17.0322704
+		},
+		"category": "other",
+		"address": " ul. Kościuszki 29"
+	},
+	{
+		"name": "Agencja Pracy Walter-Fach-Kraft",
+		"location": {
+			"lat": 51.1083377,
+			"lng": 17.035645
+		},
+		"category": "other",
+		"address": " ul. Oławska 17"
+	},
+	{
+		"name": "Akademia Kuraszków",
+		"location": {
+			"lat": 51.3183331,
+			"lng": 16.9457379
+		},
+		"category": "other",
+		"address": " ul. Jesionowa 9 (Kuraszków k. Obornik Śląskich)"
+	},
+	{
+		"name": "AleBrowar Wrocław",
+		"location": {
+			"lat": 51.1096893,
+			"lng": 17.0232109
+		},
+		"category": "pub",
+		"address": " ul. Pawła Włodkowica 27"
+	},
+	{
+		"name": "Angielska Moda - sklep z odzieżą używaną",
+		"location": {
+			"lat": 51.125948,
+			"lng": 16.972651
+		},
+		"category": "shop",
+		"address": " Bulwar Ikara 11/15a"
+	},
+	{
+		"name": "Armine restauracja ormiańska",
+		"location": {
+			"lat": 51.0999783,
+			"lng": 17.0296289
+		},
+		"category": "restaurant",
+		"address": " ul. Bogusławskiego 83"
+	},
+	{
+		"name": "Art Souvenirs - Informacja Turystyczna",
+		"location": {
+			"lat": 51.1094174,
+			"lng": 17.0302523
+		},
+		"category": "shop",
+		"address": " pl. Solny 20"
+	},
+	{
+		"name": "Art. Caffe Kalambur i Kalaczakra",
+		"location": {
+			"lat": 51.11275389999999,
+			"lng": 17.0346379
+		},
+		"category": "pub",
+		"address": " ul. Kuźnicza 29a"
+	},
+	{
+		"name": "Artykuł przemysłowe - sklep",
+		"location": {
+			"lat": 51.111801,
+			"lng": 17.036517
+		},
+		"category": "shop",
+		"address": " ul. Nożownicza 37"
+	},
+	{
+		"name": "Auto Komis \"Gosia\"",
+		"location": {
+			"lat": 51.09627589999999,
+			"lng": 16.968158
+		},
+		"category": "shop",
+		"address": " ul. Krzemieniecka 9A"
+	},
+	{
+		"name": "Ay! Cafe",
+		"location": {
+			"lat": 51.113319,
+			"lng": 17.0337939
+		},
+		"category": "cafe",
+		"address": " ul. Uniwersytecka 11/12"
+	},
+	{
+		"name": "Bajeczna Księgarnia",
+		"location": {
+			"lat": 51.0819226,
+			"lng": 16.9904415
+		},
+		"category": "shop",
+		"address": " ul. Lakiernicza 21"
+	},
+	{
+		"name": "Bałagan Pub",
+		"location": {
+			"lat": 51.099995,
+			"lng": 17.029911
+		},
+		"category": "pub",
+		"address": " ul. Bogusławskiego 87"
+	},
+	{
+		"name": "Bar Nadwaga",
+		"location": {
+			"lat": 51.11271900000001,
+			"lng": 17.0316489
+		},
+		"category": "restaurant",
+		"address": " ul. Odrzańska 16"
+	},
+	{
+		"name": "Bar Wegański VEGA",
+		"location": {
+			"lat": 51.1098173,
+			"lng": 17.0326865
+		},
+		"category": "restaurant",
+		"address": " Rynek 27a"
+	},
+	{
+		"name": "Barbara Infopunkt Kawiarnia",
+		"location": {
+			"lat": 51.1077019,
+			"lng": 17.032726
+		},
+		"category": "cafe",
+		"address": " ul. Świdnicka 8b"
+	},
+	{
+		"name": "Barka Tumska",
+		"location": {
+			"lat": 51.11639960000001,
+			"lng": 17.0407019
+		},
+		"category": "pub",
+		"address": " Wyspa Słodowa 10"
+	},
+	{
+		"name": "Baszta",
+		"location": {
+			"lat": 51.1119284,
+			"lng": 17.0402341
+		},
+		"category": "pub",
+		"address": " ul. Kraińskiego 14"
+	},
+	{
+		"name": "Batat Bar",
+		"location": {
+			"lat": 51.11146060000001,
+			"lng": 17.0224303
+		},
+		"category": "pub",
+		"address": " pl. Jana Pawła II (przejście podziemne)"
+	},
+	{
+		"name": "Beathe Ushe",
+		"location": {
+			"lat": 51.107991,
+			"lng": 17.026849
+		},
+		"category": "shop",
+		"address": " ul. Krupnicza 6/8"
+	},
+	{
+		"name": "Beef Burger",
+		"location": {
+			"lat": 51.0585494,
+			"lng": 17.0111813
+		},
+		"category": "restaurant",
+		"address": " ul. Zwycięska 14"
+	},
+	{
+		"name": "Bema Cafe",
+		"location": {
+			"lat": 51.1180279,
+			"lng": 17.0401954
+		},
+		"category": "cafe",
+		"address": " ul. Drobnera 38"
+	},
+	{
+		"name": "Bema Café",
+		"location": {
+			"lat": 51.1205469,
+			"lng": 16.9931742
+		},
+		"category": "cafe",
+		"address": " ul. Legnicka 56"
+	},
+	{
+		"name": "Bernard",
+		"location": {
+			"lat": 51.1100028,
+			"lng": 17.0334137
+		},
+		"category": "restaurant",
+		"address": " Rynek 35"
+	},
+	{
+		"name": "Bike Cafe",
+		"location": {
+			"lat": 51.1089199,
+			"lng": 17.0260574
+		},
+		"category": "cafe",
+		"address": " ul. Św. Antoniego 8"
+	},
+	{
+		"name": "Bistro \"Jak u Babci\"",
+		"location": {
+			"lat": 51.11067569999999,
+			"lng": 17.1176886
+		},
+		"category": "restaurant",
+		"address": " ul. Marca Polo 9c"
+	},
+	{
+		"name": "Bistro Miło Mi",
+		"location": {
+			"lat": 51.0482664,
+			"lng": 17.0279984
+		},
+		"category": "restaurant",
+		"address": " ul. Brylantowa 16"
+	},
+	{
+		"name": "Bistro Przemysłowe",
+		"location": {
+			"lat": 51.1096231,
+			"lng": 17.034037
+		},
+		"category": "restaurant",
+		"address": " ul. Kurzy Targ 3/2"
+	},
+	{
+		"name": "Biuro Podróży Almatur Wrocław S.C.",
+		"location": {
+			"lat": 51.0835239,
+			"lng": 17.0401363
+		},
+		"category": "other",
+		"address": " Al. Amii Krajowej 12a/2"
+	},
+	{
+		"name": "Biuro Podróży TUI Wrocław Legnicka",
+		"location": {
+			"lat": 51.1233435,
+			"lng": 16.9897753
+		},
+		"category": "other",
+		"address": " ul. Legnicka 55f"
+	},
+	{
+		"name": "Biuro Projektowo-Handlowe Danuta Bator",
+		"location": {
+			"lat": 51.08374389999999,
+			"lng": 17.019225
+		},
+		"category": "other",
+		"address": " Aleja Kasztanowa 25"
+	},
+	{
+		"name": "Black Point Cafe",
+		"location": {
+			"lat": 51.14567109999999,
+			"lng": 16.8696768
+		},
+		"category": "cafe",
+		"address": " ul. Średzka 16A"
+	},
+	{
+		"name": "Black Point Cafe",
+		"location": {
+			"lat": 51.1052154,
+			"lng": 17.0234616
+		},
+		"category": "cafe",
+		"address": " ul. Sądowa 3 i 5"
+	},
+	{
+		"name": "Bobby Burger",
+		"location": {
+			"lat": 51.111433,
+			"lng": 17.0353829
+		},
+		"category": "restaurant",
+		"address": " ul. Szewska 27"
+	},
+	{
+		"name": "Bohema Caffe",
+		"location": {
+			"lat": 51.1066995,
+			"lng": 17.0320205
+		},
+		"category": "cafe",
+		"address": " ul. Świdnicka 22"
+	},
+	{
+		"name": "Botanika Duszy",
+		"location": {
+			"lat": 51.1134586,
+			"lng": 17.054097
+		},
+		"category": "cafe",
+		"address": " ul. Szczytnicka 36B"
+	},
+	{
+		"name": "Braniborska Street Food",
+		"location": {
+			"lat": 51.110585,
+			"lng": 17.0118003
+		},
+		"category": "restaurant",
+		"address": " ul. Braniborska 14"
+	},
+	{
+		"name": "Browar pod Złotym Psem",
+		"location": {
+			"lat": 51.1103377,
+			"lng": 17.0335486
+		},
+		"category": "restaurant, pub",
+		"address": " Rynek 41"
+	},
+	{
+		"name": "Browar Prost",
+		"location": {
+			"lat": 51.150788,
+			"lng": 17.022751
+		},
+		"category": "restaurant, pub",
+		"address": " ul. Paprotna 4"
+	},
+	{
+		"name": "Browar Sabotaż",
+		"location": {
+			"lat": 51.1202182,
+			"lng": 17.0287885
+		},
+		"category": "restaurant, pub",
+		"address": " ul. Kurkowa 41"
+	},
+	{
+		"name": "Browar Wielka Wyspa",
+		"location": {
+			"lat": 51.1068582,
+			"lng": 17.0928574
+		},
+		"category": "pub",
+		"address": " ul. Partyzantów 1"
+	},
+	{
+		"name": "Browar Wielka Wyspa",
+		"location": {
+			"lat": 51.106755,
+			"lng": 17.092895
+		},
+		"category": "pub",
+		"address": " ul. Edwarda Dembowskiego 18/2"
+	},
+	{
+		"name": "Bułka z masłem",
+		"location": {
+			"lat": 51.10824849999999,
+			"lng": 17.0241148
+		},
+		"category": "restaurant, cafe",
+		"address": " ul. Włodkowica 8a"
+	},
+	{
+		"name": "Bułka z masłem",
+		"location": {
+			"lat": 51.1089046,
+			"lng": 17.0287868
+		},
+		"category": "restaurant, cafe",
+		"address": " plac Solny 14"
+	},
+	{
+		"name": "Bułka z masłem",
+		"location": {
+			"lat": 51.0593268,
+			"lng": 17.0133064
+		},
+		"category": "restaurant, cafe",
+		"address": " ul. Zwycięska 45"
+	},
+	{
+		"name": "Burger Love",
+		"location": {
+			"lat": 51.1122449,
+			"lng": 17.0322567
+		},
+		"category": "restaurant",
+		"address": " ul. Więzienna 31 a"
+	},
+	{
+		"name": "Wytwórnia Mexican Food",
+		"location": {
+			"lat": 51.1004385,
+			"lng": 17.0256895
+		},
+		"category": "cafe, pub",
+		"address": " ul. Bogusławskiego 55"
+	},
+	{
+		"name": "Cafe Borówka",
+		"location": {
+			"lat": 51.10470549999999,
+			"lng": 17.0313717
+		},
+		"category": "cafe",
+		"address": " ul. Świdnicka 38A"
+	},
+	{
+		"name": "Cafe de France",
+		"location": {
+			"lat": 51.1103369,
+			"lng": 17.0327545
+		},
+		"category": "cafe",
+		"address": " Rynek - Ratusz 20 - 22 1A"
+	},
+	{
+		"name": "Cafe Kulisy (Teatr Polski)",
+		"location": {
+			"lat": 51.10125559999999,
+			"lng": 17.0263203
+		},
+		"category": "cafe",
+		"address": " ul. Zapolskiej 3"
+	},
+	{
+		"name": "Cafe Nożownicza",
+		"location": {
+			"lat": 51.11844869999999,
+			"lng": 17.0338225
+		},
+		"category": "cafe",
+		"address": " ul. Rydgiera 13"
+	},
+	{
+		"name": "Cafe Oblivion",
+		"location": {
+			"lat": 51.11648460000001,
+			"lng": 17.0518344
+		},
+		"category": "cafe",
+		"address": " ul. Sienkiewicza 29"
+	},
+	{
+		"name": "Cafe Rozrusznik",
+		"location": {
+			"lat": 51.1167135,
+			"lng": 17.031193
+		},
+		"category": "cafe",
+		"address": " ul. Cybulskiego 15"
+	},
+	{
+		"name": "Cafe Równik",
+		"location": {
+			"lat": 51.119116,
+			"lng": 17.0387509
+		},
+		"category": "cafe, restaurant",
+		"address": " ul. Jedności Narodowej 47"
+	},
+	{
+		"name": "Cafe Vincent",
+		"location": {
+			"lat": 51.108747,
+			"lng": 17.034741
+		},
+		"category": "cafe, restaurant",
+		"address": " ul. Oławska 8/1a"
+	},
+	{
+		"name": "Cafe Vincent",
+		"location": {
+			"lat": 51.1101451,
+			"lng": 17.0282571
+		},
+		"category": "cafe, restaurant",
+		"address": " ul. Ruska 5"
+	},
+	{
+		"name": "Caffe Praha",
+		"location": {
+			"lat": 51.0995877,
+			"lng": 17.0186624
+		},
+		"category": "cafe",
+		"address": " ul. Stysia 41"
+	},
+	{
+		"name": "Central Cafe",
+		"location": {
+			"lat": 51.1088921,
+			"lng": 17.0259869
+		},
+		"category": "cafe",
+		"address": " ul. św. Antoniego 10"
+	},
+	{
+		"name": "Centrum Informacji Żydowskiej",
+		"location": {
+			"lat": 51.1084109,
+			"lng": 17.0254545
+		},
+		"category": "other",
+		"address": " ul. Włodkowica 9"
+	},
+	{
+		"name": "Centrum Islandologiczne",
+		"location": {
+			"lat": 51.1087134,
+			"lng": 16.8926492
+		},
+		"category": "other",
+		"address": " ul. Zarembowicza 6a"
+	},
+	{
+		"name": "Centrum Kultury i Sportu Stabłowice",
+		"location": {
+			"lat": 51.157849,
+			"lng": 16.891903
+		},
+		"category": "other",
+		"address": " ul. Stabłowicka 80"
+	},
+	{
+		"name": "Centrum ogrodnicze i sklep ogrodniczy Inter-Plant",
+		"location": {
+			"lat": 51.133633,
+			"lng": 17.0623309
+		},
+		"category": "shop",
+		"address": " ul. Jana Długosza 36"
+	},
+	{
+		"name": "Cinema Paradiso",
+		"location": {
+			"lat": 51.0998029,
+			"lng": 17.0303808
+		},
+		"category": "pub",
+		"address": " ul. Bogusławskiego 99"
+	},
+	{
+		"name": "Coffee Planet",
+		"location": {
+			"lat": 51.110401,
+			"lng": 17.030368
+		},
+		"category": "cafe",
+		"address": " Rynek 7"
+	},
+	{
+		"name": "Corso Tradizione Italiana",
+		"location": {
+			"lat": 51.11079789999999,
+			"lng": 17.035104
+		},
+		"category": "restaurant",
+		"address": " ul. Szewska 19-21/1A"
+	},
+	{
+		"name": "Crazy Potatos",
+		"location": {
+			"lat": 51.1162773,
+			"lng": 17.0080894
+		},
+		"category": "restaurant",
+		"address": " ul. Stefana Czarnieckiego 13"
+	},
+	{
+		"name": "Czarna Magia",
+		"location": {
+			"lat": 51.1102357,
+			"lng": 17.0293423
+		},
+		"category": "cafe, pub",
+		"address": " ul. Kiełbaśnicza 2"
+	},
+	{
+		"name": "Czekoladziarnia",
+		"location": {
+			"lat": 51.1088282,
+			"lng": 17.0233981
+		},
+		"category": "cafe",
+		"address": " ul. Włodkowica 19"
+	},
+	{
+		"name": "Czerwona Cebula",
+		"location": {
+			"lat": 51.13078489999999,
+			"lng": 17.0600684
+		},
+		"category": "restaurant, pub",
+		"address": " ul. Kromera 2"
+	},
+	{
+		"name": "Czeski Film Pub",
+		"location": {
+			"lat": 51.1102357,
+			"lng": 17.0293423
+		},
+		"category": "pub",
+		"address": " ul. Kiełbaśnicza 2"
+	},
+	{
+		"name": "Czuła jest noc PUB",
+		"location": {
+			"lat": 51.10137479999999,
+			"lng": 17.0234428
+		},
+		"category": "pub",
+		"address": " ul. Kolejowa 8"
+	},
+	{
+		"name": "Decathlon Bielany Wrocławskie",
+		"location": {
+			"lat": 51.0514623,
+			"lng": 16.9687023
+		},
+		"category": "shop",
+		"address": " ul. Francuska 2"
+	},
+	{
+		"name": "Decathlon Magnolia",
+		"location": {
+			"lat": 51.1172337,
+			"lng": 16.9883649
+		},
+		"category": "shop",
+		"address": " ul. Legnicka 58"
+	},
+	{
+		"name": "Dizzy Daisy Hostel Wrocław",
+		"location": {
+			"lat": 51.1138968,
+			"lng": 17.0654583
+		},
+		"category": "other",
+		"address": " pl. Grunwaldzki 63"
+	},
+	{
+		"name": "DNA Bistro",
+		"location": {
+			"lat": 51.1102287,
+			"lng": 17.032103
+		},
+		"category": "restaurant",
+		"address": " Przejście Garncarskie 8"
+	},
+	{
+		"name": "Dobre Jem",
+		"location": {
+			"lat": 51.1537736,
+			"lng": 17.0441796
+		},
+		"category": "restaurant",
+		"address": " ul. H. Kamieńskiego 211 / U1"
+	},
+	{
+		"name": "Dog Ahead - Butik Firmowy Milena Kalinowska",
+		"location": {
+			"lat": 51.1207759,
+			"lng": 17.0433008
+		},
+		"category": "shop",
+		"address": " ul. Poniatowskiego 15"
+	},
+	{
+		"name": "Dolnośląska Informacja Turystyczna",
+		"location": {
+			"lat": 51.1097893,
+			"lng": 17.0317771
+		},
+		"category": "other",
+		"address": " Sukiennice 12"
+	},
+	{
+		"name": "Dolnośląski Zakład Pogrzebowy",
+		"location": {
+			"lat": 51.100507,
+			"lng": 17.0531805
+		},
+		"category": "other",
+		"address": " ul. Traugutta 107"
+	},
+	{
+		"name": "Dom Pomocy Społecznej",
+		"location": {
+			"lat": 51.1413185,
+			"lng": 16.9533645
+		},
+		"category": "other",
+		"address": " ul. Mączna 3"
+	},
+	{
+		"name": "Drukawka",
+		"location": {
+			"lat": 51.11850090000001,
+			"lng": 17.059351
+		},
+		"category": "cafe",
+		"address": " ul. Nowowiejska 100"
+	},
+	{
+		"name": "Dwie Małpy",
+		"location": {
+			"lat": 51.1105189,
+			"lng": 17.0257531
+		},
+		"category": "cafe",
+		"address": " ul. Ruska 10"
+	},
+	{
+		"name": "Dwór Polski Hotel",
+		"location": {
+			"lat": 51.1102509,
+			"lng": 17.0292608
+		},
+		"category": "other",
+		"address": " ul. Kiełbaśnicza 2"
+	},
+	{
+		"name": "Dwór Polski Restauracje",
+		"location": {
+			"lat": 51.1104594,
+			"lng": 17.0304147
+		},
+		"category": "restaurant",
+		"address": " Rynek 5"
+	},
+	{
+		"name": "Ecorson Wrocław",
+		"location": {
+			"lat": 51.088032,
+			"lng": 17.050007
+		},
+		"category": "shop",
+		"address": " ul. Henrykowska 1"
+	},
+	{
+		"name": "Etno Cafe 101",
+		"location": {
+			"lat": 51.099842,
+			"lng": 17.0350286
+		},
+		"category": "cafe",
+		"address": " ul. Piłsudskiego 101"
+	},
+	{
+		"name": "Etno Cafe Okrąglak",
+		"location": {
+			"lat": 51.10238529999999,
+			"lng": 17.0300293
+		},
+		"category": "cafe",
+		"address": " ul. Świdnicka 42"
+	},
+	{
+		"name": "Etno Cafe OVO",
+		"location": {
+			"lat": 51.1077111,
+			"lng": 17.0423725
+		},
+		"category": "cafe",
+		"address": " ul. Podwale 83"
+	},
+	{
+		"name": "EUROLIDER Sp. z o.o.",
+		"location": {
+			"lat": 51.0659984,
+			"lng": 17.0097925
+		},
+		"category": "other",
+		"address": " ul. Ołtaszyńska 39"
+	},
+	{
+		"name": "FC Caffe",
+		"location": {
+			"lat": 51.11319959999999,
+			"lng": 17.0348278
+		},
+		"category": "cafe",
+		"address": " ul. Kuźnicza 30"
+	},
+	{
+		"name": "Federacja Wina",
+		"location": {
+			"lat": 51.1110367,
+			"lng": 17.0351507
+		},
+		"category": "restaurant",
+		"address": " ul. Szewska 24-26/1b"
+	},
+	{
+		"name": "FERA Sp. z o.o.",
+		"location": {
+			"lat": 51.0704337,
+			"lng": 17.0387946
+		},
+		"category": "shop",
+		"address": " ul. Hubska 52"
+	},
+	{
+		"name": "Florystyka Absolutna FormaLIŚCI",
+		"location": {
+			"lat": 51.119962,
+			"lng": 17.0585099
+		},
+		"category": "shop",
+		"address": " ul. Walecznych 3"
+	},
+	{
+		"name": "Folgujemy - kuchnia na trawie",
+		"location": {
+			"lat": 51.1019207,
+			"lng": 17.0424178
+		},
+		"category": "restaurant",
+		"address": " ul. Kniaziewicza 16"
+	},
+	{
+		"name": "Folkstar",
+		"location": {
+			"lat": 51.1126221,
+			"lng": 17.0316224
+		},
+		"category": "shop",
+		"address": " ul. Odrzańska 15"
+	},
+	{
+		"name": "Folkstar Galeria Dominikańska",
+		"location": {
+			"lat": 51.10834879999999,
+			"lng": 17.0404281
+		},
+		"category": "shop",
+		"address": " pl. Dominikański 3"
+	},
+	{
+		"name": "Food Love",
+		"location": {
+			"lat": 51.118543,
+			"lng": 17.035403
+		},
+		"category": "restaurant",
+		"address": " ul. Władysława łokietka 12c"
+	},
+	{
+		"name": "Fotografia Lucyna Marciniak",
+		"location": {
+			"lat": 51.05449100000001,
+			"lng": 17.005197
+		},
+		"category": "shop, other",
+		"address": " ul. 3"
+	},
+	{
+		"name": "Fox Strategy Marketing internetowy",
+		"location": {
+			"lat": 51.1022916,
+			"lng": 17.0233582
+		},
+		"category": "other",
+		"address": " ul. Piłsudskiego 23/2"
+	},
+	{
+		"name": "Frankie\\'s",
+		"location": {
+			"lat": 51.1104941,
+			"lng": 17.0340648
+		},
+		"category": "restaurant",
+		"address": " ul. Wita Stwosza 57"
+	},
+	{
+		"name": "Frytki+SOS",
+		"location": {
+			"lat": 51.1090086,
+			"lng": 17.0256092
+		},
+		"category": "restaurant",
+		"address": " ul. św. Antoniego 14"
+	},
+	{
+		"name": "Fundacja Wspierania i Rozwoju Kreatywności",
+		"location": {
+			"lat": 51.0982042,
+			"lng": 17.0332644
+		},
+		"category": "other",
+		"address": " ul. Ślężna 2/24"
+	},
+	{
+		"name": "Galeria Awangarda BWA Wrocław",
+		"location": {
+			"lat": 51.109694,
+			"lng": 17.037543
+		},
+		"category": "other",
+		"address": " Wita Stwosza 32"
+	},
+	{
+		"name": "Galeria Dizajn BWA Wrocław",
+		"location": {
+			"lat": 51.1087739,
+			"lng": 17.033175
+		},
+		"category": "other",
+		"address": " Świdnicka 2-4"
+	},
+	{
+		"name": "Galeria Łucznik",
+		"location": {
+			"lat": 51.13361279999999,
+			"lng": 17.0662958
+		},
+		"category": "other",
+		"address": " ul. Macieja Miechowity 1"
+	},
+	{
+		"name": "Galeria Miejska",
+		"location": {
+			"lat": 51.1108659,
+			"lng": 17.02926
+		},
+		"category": "other",
+		"address": " ul. Kiełbaśnicza 28"
+	},
+	{
+		"name": "Galeria Neon Side",
+		"location": {
+			"lat": 51.1099712,
+			"lng": 17.0245624
+		},
+		"category": "other",
+		"address": " ul. Ruska 46c"
+	},
+	{
+		"name": "Galeria SiC BWA Wrocław",
+		"location": {
+			"lat": 51.1026276,
+			"lng": 17.0288542
+		},
+		"category": "other",
+		"address": " Plac gen. Tadeusza Kościuszki 9/10"
+	},
+	{
+		"name": "Galeria Socato",
+		"location": {
+			"lat": 51.1091862,
+			"lng": 17.0285765
+		},
+		"category": "other",
+		"address": " pl. Solny 11"
+	},
+	{
+		"name": "Galeria Studio BWA Wrocław",
+		"location": {
+			"lat": 51.110568,
+			"lng": 17.0246679
+		},
+		"category": "other",
+		"address": " Ruska 46a/301"
+	},
+	{
+		"name": "Galeria Sztuki i Designu KAPRYSY",
+		"location": {
+			"lat": 51.1102287,
+			"lng": 17.032103
+		},
+		"category": "other",
+		"address": " Przejście Garncarskie 8"
+	},
+	{
+		"name": "Galeria Wrocławscy Projektanci",
+		"location": {
+			"lat": 51.10825029999999,
+			"lng": 17.0329188
+		},
+		"category": "other",
+		"address": " ul. Świdnicka 6"
+	},
+	{
+		"name": "Galeria Wydawnictwa Illustris",
+		"location": {
+			"lat": 51.112139,
+			"lng": 17.0313065
+		},
+		"category": "other",
+		"address": " ul. Odrzańska 8/1a"
+	},
+	{
+		"name": "Giselle French Bakery Cafe",
+		"location": {
+			"lat": 51.1116847,
+			"lng": 17.0354487
+		},
+		"category": "restaurant",
+		"address": " ul. Szewska 27"
+	},
+	{
+		"name": "Gold Cafe",
+		"location": {
+			"lat": 51.1378031,
+			"lng": 17.0557372
+		},
+		"category": "cafe",
+		"address": " pl. Piłsudskiego 1/1b"
+	},
+	{
+		"name": "Graciarnia",
+		"location": {
+			"lat": 51.1075867,
+			"lng": 17.0301124
+		},
+		"category": "pub",
+		"address": " ul. Kazimierza Wielkiego 39"
+	},
+	{
+		"name": "Green Bus Point",
+		"location": {
+			"lat": 51.1167057,
+			"lng": 17.0331302
+		},
+		"category": "restaurant",
+		"address": " ul. Dubois 2/1a"
+	},
+	{
+		"name": "Green Caffe Nero",
+		"location": {
+			"lat": 51.1035887,
+			"lng": 17.0299484
+		},
+		"category": "cafe",
+		"address": " plac Kościuszki 1"
+	},
+	{
+		"name": "Green Caffe Nero",
+		"location": {
+			"lat": 51.1082951,
+			"lng": 17.0395763
+		},
+		"category": "cafe",
+		"address": " plac Dominikański 3"
+	},
+	{
+		"name": "Gunfire.pl",
+		"location": {
+			"lat": 51.1346937,
+			"lng": 17.0620436
+		},
+		"category": "shop",
+		"address": " ul. Jana Długosza 44"
+	},
+	{
+		"name": "Gusto Pizzeria",
+		"location": {
+			"lat": 51.1185669,
+			"lng": 17.0381101
+		},
+		"category": "restaurant",
+		"address": " ul. Jedności Narodowej 77"
+	},
+	{
+		"name": "Habza Cafe",
+		"location": {
+			"lat": 51.078861,
+			"lng": 17.0628563
+		},
+		"category": "cafe",
+		"address": " ul. Tarnopgajska 49/1a"
+	},
+	{
+		"name": "Happy Pet",
+		"location": {
+			"lat": 51.0742244,
+			"lng": 16.9932403
+		},
+		"category": "shop",
+		"address": " ul. Południowa 1/1a"
+	},
+	{
+		"name": "Herbaciarnia K2",
+		"location": {
+			"lat": 51.11019899999999,
+			"lng": 17.0293509
+		},
+		"category": "cafe",
+		"address": " ul. Kiełbaśnicza 2"
+	},
+	{
+		"name": "Horyzont Sklep Turystyczny",
+		"location": {
+			"lat": 51.1130777,
+			"lng": 17.0562716
+		},
+		"category": "shop",
+		"address": " ul. Ładna 2 B"
+	},
+	{
+		"name": "Hospicjum Ojców Bonifratrów",
+		"location": {
+			"lat": 51.1579398,
+			"lng": 17.0330016
+		},
+		"category": "other",
+		"address": " ul. Poświęcka 8A"
+	},
+	{
+		"name": "Hotel i restauracja Preemier",
+		"location": {
+			"lat": 50.8798188,
+			"lng": 16.5850206
+		},
+		"category": "restaurant, hotel",
+		"address": " ul. Wrocławska 12"
+	},
+	{
+		"name": "Hotel Ibis Budget Wrocław Południe",
+		"location": {
+			"lat": 51.068029,
+			"lng": 17.0070603
+		},
+		"category": "hotel",
+		"address": " ul. Wyścigowa 35 a"
+	},
+	{
+		"name": "Hotel Scandic",
+		"location": {
+			"lat": 51.10135349999999,
+			"lng": 17.0279478
+		},
+		"category": "hotel",
+		"address": " ul. Piłsudskiego 49/57"
+	},
+	{
+		"name": "Hotel Tumski",
+		"location": {
+			"lat": 51.1160895,
+			"lng": 17.0406253
+		},
+		"category": "hotel",
+		"address": " Wyspa Słodowa 10"
+	},
+	{
+		"name": "Hubertus",
+		"location": {
+			"lat": 51.1083238,
+			"lng": 17.0362179
+		},
+		"category": "restaurant",
+		"address": " ul. Biskupia 1"
+	},
+	{
+		"name": "Huśtawka",
+		"location": {
+			"lat": 51.1001539,
+			"lng": 17.0296413
+		},
+		"category": "pub",
+		"address": " ul. Bogusławskiego 75"
+	},
+	{
+		"name": "Hotel Ibis Budget Stadion Wrocław",
+		"location": {
+			"lat": 51.13827939999999,
+			"lng": 16.9467577
+		},
+		"category": "hotel",
+		"address": " ul. Lotnicza 151"
+	},
+	{
+		"name": "Hotel Ibis Wrocław Centrum",
+		"location": {
+			"lat": 51.098515,
+			"lng": 17.024029
+		},
+		"category": "hotel",
+		"address": " pl. Powstańców Śląskich 7-7b"
+	},
+	{
+		"name": "Hotel Invite",
+		"location": {
+			"lat": 51.0911074,
+			"lng": 17.0443155
+		},
+		"category": "hotel",
+		"address": " ul. Hubska 54"
+	},
+	{
+		"name": "Inwestgrupa",
+		"location": {
+			"lat": 51.109538,
+			"lng": 17.0346559
+		},
+		"category": "other",
+		"address": " ul. Szewska 10"
+	},
+	{
+		"name": "Jadalnia domowa",
+		"location": {
+			"lat": 51.1325881,
+			"lng": 17.0618398
+		},
+		"category": "restaurant",
+		"address": " Al. Boya Żeleńskiego 69d"
+	},
+	{
+		"name": "Jaffa Bar&amp;Market",
+		"location": {
+			"lat": 51.109023,
+			"lng": 17.028963
+		},
+		"category": "restaurant",
+		"address": " pl. Solny 14"
+	},
+	{
+		"name": "Kakadu",
+		"location": {
+			"lat": 51.1407934,
+			"lng": 17.0834699
+		},
+		"category": "shop",
+		"address": " ul. Krzywoustego 110"
+	},
+	{
+		"name": "Kanapki Bernardetki",
+		"location": {
+			"lat": 51.11246,
+			"lng": 17.034494
+		},
+		"category": "restaurant",
+		"address": " ul. Kuźnicza 25"
+	},
+	{
+		"name": "Kancelaria Adwokacka adw. Aleksandra Rogowska",
+		"location": {
+			"lat": 51.120676,
+			"lng": 17.035131
+		},
+		"category": "other",
+		"address": " ul. Bolesława Chrobrego 2/31"
+	},
+	{
+		"name": "Kancelaria Adwokacka Bartosz Dawidowicz",
+		"location": {
+			"lat": 51.10364089999999,
+			"lng": 17.024778
+		},
+		"category": "other",
+		"address": " pl. Muzealny 8/3"
+	},
+	{
+		"name": "Karczma Młyńska",
+		"location": {
+			"lat": 51.1159591,
+			"lng": 17.0407906
+		},
+		"category": "restaurant",
+		"address": " Wyspa Słodowa 10"
+	},
+	{
+		"name": "Karczma Piastów",
+		"location": {
+			"lat": 51.1107316,
+			"lng": 17.0295059
+		},
+		"category": "restaurant",
+		"address": " ul. Kiełbaśnicza 6"
+	},
+	{
+		"name": "Karmnik",
+		"location": {
+			"lat": 51.1168438,
+			"lng": 17.0311197
+		},
+		"category": "restaurant",
+		"address": " ul. Cybulskiego 17"
+	},
+	{
+		"name": "Kawa i makaronik",
+		"location": {
+			"lat": 51.1132471,
+			"lng": 17.0329693
+		},
+		"category": "cafe",
+		"address": " ul. Uniwersytecka 19/20"
+	},
+	{
+		"name": "Kawiarnia Gniazdo",
+		"location": {
+			"lat": 51.1053861,
+			"lng": 17.0315415
+		},
+		"category": "cafe",
+		"address": " ul. Świdnicka 36"
+	},
+	{
+		"name": "Kawiarnia Amorinio.pl",
+		"location": {
+			"lat": 51.1104352,
+			"lng": 17.0335755
+		},
+		"category": "cafe",
+		"address": " ul. Wita Stwosza 1-2"
+	},
+	{
+		"name": "Kawiarnia Artystyczna „Alfa”",
+		"location": {
+			"lat": 51.11906390000001,
+			"lng": 17.0574618
+		},
+		"category": "cafe",
+		"address": " ul. Nowowiekjska 63"
+	},
+	{
+		"name": "Kawiarnia Ciepło Zimno",
+		"location": {
+			"lat": 51.1061422,
+			"lng": 17.1036151
+		},
+		"category": "cafe",
+		"address": " ul. Edwarda Dembowskiego 51"
+	},
+	{
+		"name": "Kawiarnia Coffilm",
+		"location": {
+			"lat": 51.1139251,
+			"lng": 17.0593875
+		},
+		"category": "cafe",
+		"address": " ul. Grunwaldzka 38/2"
+	},
+	{
+		"name": "Kawiarnia Karmel",
+		"location": {
+			"lat": 51.1461937,
+			"lng": 17.0717152
+		},
+		"category": "cafe",
+		"address": " ul. Rafała Wojaczka 3d"
+	},
+	{
+		"name": "Kawiarnia Kulka Cafè",
+		"location": {
+			"lat": 51.06365049999999,
+			"lng": 16.9838702
+		},
+		"category": "cafe",
+		"address": " ul. Wałbrzyska 3"
+	},
+	{
+		"name": "Kawiarnia La Scala",
+		"location": {
+			"lat": 51.11013759999999,
+			"lng": 17.0334333
+		},
+		"category": "cafe",
+		"address": " pl. Solny 11"
+	},
+	{
+		"name": "Kawiarnia Oliwierkowo",
+		"location": {
+			"lat": 51.110526,
+			"lng": 17.117543
+		},
+		"category": "cafe",
+		"address": " ul. Marca Polo 9b"
+	},
+	{
+		"name": "Kawiarnia Rondo Cafe",
+		"location": {
+			"lat": 51.1243498,
+			"lng": 16.9878835
+		},
+		"category": "cafe",
+		"address": " ul. Legnicka 57s"
+	},
+	{
+		"name": "Kawiarani Rondo Cafe",
+		"location": {
+			"lat": 51.059252,
+			"lng": 17.0074519
+		},
+		"category": "cafe",
+		"address": " ul. Ołtaszyńska 92a/7"
+	},
+	{
+		"name": "Kawiarnia Wincentego 21",
+		"location": {
+			"lat": 51.12279359999999,
+			"lng": 17.0346451
+		},
+		"category": "cafe",
+		"address": " ul. Wincentego 21"
+	},
+	{
+		"name": "\"Kebz - More Than Kebab",
+		"location": {
+			"lat": 51.119568,
+			"lng": 17.057448
+		},
+		"category": "restaurant",
+		"address": " ul. Nowowiejska 82"
+	},
+	{
+		"name": "Kombinat",
+		"location": {
+			"lat": 51.1097652,
+			"lng": 17.0287883
+		},
+		"category": "pub",
+		"address": " pl. Solny 6/7A"
+	},
+	{
+		"name": "Konopna Farmacja",
+		"location": {
+			"lat": 50.7299921,
+			"lng": 16.6516823
+		},
+		"category": "shop",
+		"address": " pl. Powstańców Śląskich 17/117"
+	},
+	{
+		"name": "Kontynuacja Bar",
+		"location": {
+			"lat": 51.10840590000001,
+			"lng": 17.031682
+		},
+		"category": "pub",
+		"address": " ul. Ofiar Oświęcimskich 17"
+	},
+	{
+		"name": "Kres",
+		"location": {
+			"lat": 51.10836,
+			"lng": 17.0318889
+		},
+		"category": "restaurant",
+		"address": " ul. Ofiar Oświęcimskich 19"
+	},
+	{
+		"name": "Krvn pub",
+		"location": {
+			"lat": 51.1095897,
+			"lng": 17.0235789
+		},
+		"category": "restaurant",
+		"address": " ul. św. Antoniego 40/1"
+	},
+	{
+		"name": "Księgarnia \"Chmurdalia\"",
+		"location": {
+			"lat": 51.0819226,
+			"lng": 16.9904415
+		},
+		"category": "shop",
+		"address": " ul. Lakiernicza 21"
+	},
+	{
+		"name": "Księgarnia \"Pod Arkadami\"",
+		"location": {
+			"lat": 51.101732,
+			"lng": 17.029194
+		},
+		"category": "shop",
+		"address": " ul. Świdnicka 49"
+	},
+	{
+		"name": "Księgarnia i Kawiarnia Hiszpańska",
+		"location": {
+			"lat": 51.1090045,
+			"lng": 17.028313
+		},
+		"category": "cafe, shop",
+		"address": " ul. Szajnochy 5"
+	},
+	{
+		"name": "Księgarnia Matras 214 Galeria Dominikańska",
+		"location": {
+			"lat": 51.10797110000001,
+			"lng": 17.0408064
+		},
+		"category": "shop",
+		"address": " pl. Dominikański 3"
+	},
+	{
+		"name": "Księgarnia PWN",
+		"location": {
+			"lat": 51.1114849,
+			"lng": 17.0337428
+		},
+		"category": "shop",
+		"address": " ul. Kuźnicza 56"
+	},
+	{
+		"name": "Księgarnia Tak Czytam",
+		"location": {
+			"lat": 51.108517,
+			"lng": 17.035905
+		},
+		"category": "shop",
+		"address": " ul. Oławska 18"
+	},
+	{
+		"name": "Księgarnia Wrocław Odrzańska",
+		"location": {
+			"lat": 51.11222050000001,
+			"lng": 17.0313398
+		},
+		"category": "shop",
+		"address": " ul. Odrzańska 8"
+	},
+	{
+		"name": "Księgarnio-Kawiarnia Nalanda",
+		"location": {
+			"lat": 51.10229289999999,
+			"lng": 17.0291284
+		},
+		"category": "cafe, shop",
+		"address": " pl. Kościuszki 12"
+	},
+	{
+		"name": "Kuchnia Roślinna",
+		"location": {
+			"lat": 51.1009873,
+			"lng": 16.9429524
+		},
+		"category": "restaurant",
+		"address": " ul. Nożownicza 37"
+	},
+	{
+		"name": "Kuferek z koralikami",
+		"location": {
+			"lat": 51.1212258,
+			"lng": 17.043028
+		},
+		"category": "shop",
+		"address": " ul. ks. Józefa Poniatowskiego 24"
+	},
+	{
+		"name": "Kuźnia Dobrych Klimatów",
+		"location": {
+			"lat": 51.10001159999999,
+			"lng": 17.0295983
+		},
+		"category": "restaurant",
+		"address": " ul. Bogusławskiego 81"
+	},
+	{
+		"name": "Kwiaciarnia Mossmoss",
+		"location": {
+			"lat": 51.1296403,
+			"lng": 17.0410496
+		},
+		"category": "shop",
+		"address": " ul. Zakładowa 7 BA"
+	},
+	{
+		"name": "Kwiaciarnia Sasanka",
+		"location": {
+			"lat": 51.1007036,
+			"lng": 17.0079449
+		},
+		"category": "shop",
+		"address": " ul. Pereca 1-3"
+	},
+	{
+		"name": "Kwiatowe Studio",
+		"location": {
+			"lat": 51.12601739999999,
+			"lng": 17.0470328
+		},
+		"category": "shop",
+		"address": " ul. Jedności Narodowej 155"
+	},
+	{
+		"name": "la Bistro \"Appetit\"",
+		"location": {
+			"lat": 51.072385,
+			"lng": 16.994777
+		},
+		"category": "restaurant",
+		"address": " ul. Skarbowców 64"
+	},
+	{
+		"name": "La Habana",
+		"location": {
+			"lat": 51.1067631,
+			"lng": 17.0916782
+		},
+		"category": "restaurant",
+		"address": " ul. 9 Maja"
+	},
+	{
+		"name": "Lamus",
+		"location": {
+			"lat": 51.0998333,
+			"lng": 17.0302878
+		},
+		"category": "pub",
+		"address": " ul. Bogusławskiego 97"
+	},
+	{
+		"name": "Las",
+		"location": {
+			"lat": 51.111474,
+			"lng": 17.0318039
+		},
+		"category": "restaurant",
+		"address": " ul. Igielna 14"
+	},
+	{
+		"name": "Le Chef",
+		"location": {
+			"lat": 51.111718,
+			"lng": 17.032065
+		},
+		"category": "restaurant",
+		"address": " ul. Więzienna 31"
+	},
+	{
+		"name": "Leroy Merlin",
+		"location": {
+			"lat": 51.0540959,
+			"lng": 16.9751601
+		},
+		"category": "shop",
+		"address": " Al. Karkonoska 85"
+	},
+	{
+		"name": "Leroy Merlin",
+		"location": {
+			"lat": 51.0897757,
+			"lng": 17.0625607
+		},
+		"category": "shop",
+		"address": " ul. Krakowska 51"
+	},
+	{
+		"name": "Lokal \"Zawsze\"",
+		"location": {
+			"lat": 51.1010307,
+			"lng": 17.0253422
+		},
+		"category": "restaurant",
+		"address": " ul. Bogusławskiego 15"
+	},
+	{
+		"name": "Locomotive Hostel",
+		"location": {
+			"lat": 51.108101,
+			"lng": 17.018161
+		},
+		"category": "hotel",
+		"address": " plac Orląt Lwowskich 20A"
+	},
+	{
+		"name": "Lot Kury",
+		"location": {
+			"lat": 51.10840590000001,
+			"lng": 17.031682
+		},
+		"category": "pub",
+		"address": " ul. Ofiar Oświęcimskich 17"
+	},
+	{
+		"name": "LOVEAT",
+		"location": {
+			"lat": 51.11246,
+			"lng": 17.034494
+		},
+		"category": "restaurant",
+		"address": " ul. Kuźnicza 25/1a"
+	},
+	{
+		"name": "Lucky Apartments",
+		"location": {
+			"lat": 51.1098221,
+			"lng": 17.0359567
+		},
+		"category": "hotel",
+		"address": " ul. Wita Stwosza 15"
+	},
+	{
+		"name": "Lwia Brama",
+		"location": {
+			"lat": 51.114186,
+			"lng": 17.0440984
+		},
+		"category": "restaurant",
+		"address": " ul. Katedralna 9"
+	},
+	{
+		"name": "Łaskotki Cookie Dough Bar",
+		"location": {
+			"lat": 51.11696320000001,
+			"lng": 17.0327077
+		},
+		"category": "cafe",
+		"address": " ul. Dubois 6/2"
+	},
+	{
+		"name": "Machina Organika",
+		"location": {
+			"lat": 51.1105416,
+			"lng": 17.026012
+		},
+		"category": "restaurant",
+		"address": " ul. Ruska 19"
+	},
+	{
+		"name": "Marco Polo Restaurant &amp; Wine",
+		"location": {
+			"lat": 51.110477,
+			"lng": 17.1158247
+		},
+		"category": "restaurant",
+		"address": " ul. Marca Polo 9f"
+	},
+	{
+		"name": "Margaux Mleko i Miód",
+		"location": {
+			"lat": 51.10552149999999,
+			"lng": 17.0315325
+		},
+		"category": "restaurant",
+		"address": " ul. Świdnicka 36"
+	},
+	{
+		"name": "Marina",
+		"location": {
+			"lat": 51.114746,
+			"lng": 17.0325355
+		},
+		"category": "restaurant",
+		"address": " ul. Księcia Witolda 2"
+	},
+	{
+		"name": "Maxi Zoo - sklep dla zwierząt",
+		"location": {
+			"lat": 51.0487525,
+			"lng": 16.9598115
+		},
+		"category": "shop",
+		"address": " ul. Czekoladowa 7-9"
+	},
+	{
+		"name": "Mexico Bar",
+		"location": {
+			"lat": 51.1104277,
+			"lng": 17.0278536
+		},
+		"category": "pub",
+		"address": " ul. Rzeźnicza 34"
+	},
+	{
+		"name": "Miodosytnia",
+		"location": {
+			"lat": 51.11065,
+			"lng": 17.029512
+		},
+		"category": "pub",
+		"address": " ul. Kiełbaśnicza 6"
+	},
+	{
+		"name": "Mistrz i Małgorzata Pub",
+		"location": {
+			"lat": 51.10096859999999,
+			"lng": 17.0256518
+		},
+		"category": "pub",
+		"address": " ul. Bogusławskiego 21"
+	},
+	{
+		"name": "Mleczarnia",
+		"location": {
+			"lat": 51.1081093,
+			"lng": 17.0252436
+		},
+		"category": "cafe",
+		"address": " ul. Włodkowica 5"
+	},
+	{
+		"name": "Mobil Karm",
+		"location": {
+			"lat": 51.05624290000001,
+			"lng": 17.0126402
+		},
+		"category": "",
+		"address": " ul.Obrońców Poczty Gdańskiej 13a"
+	},
+	{
+		"name": "Mobil Karm",
+		"location": {
+			"lat": 51.1325209,
+			"lng": 17.061957
+		},
+		"category": "shop",
+		"address": " ul.Boya Żeleńskiego 71c"
+	},
+	{
+		"name": "MPT Radio-Taxi 919",
+		"location": {
+			"lat": 51.141241,
+			"lng": 16.961306
+		},
+		"category": "other",
+		"address": " ul. Sielska 14"
+	},
+	{
+		"name": "Multigrafika",
+		"location": {
+			"lat": 51.1163701,
+			"lng": 17.0325012
+		},
+		"category": "other",
+		"address": " ul. Cybulskiego 3/1a"
+	},
+	{
+		"name": "Muzeum Architektury",
+		"location": {
+			"lat": 51.109618,
+			"lng": 17.042419
+		},
+		"category": "other",
+		"address": " ul. Bernardyńska 5"
+	},
+	{
+		"name": "Nadodrze - Cafe Resto Bar",
+		"location": {
+			"lat": 51.1184668,
+			"lng": 17.0385973
+		},
+		"category": "restaurant",
+		"address": " ul. Drobnera 26a"
+	},
+	{
+		"name": "Najadacze",
+		"location": {
+			"lat": 51.112139,
+			"lng": 17.035805
+		},
+		"category": "restaurant",
+		"address": " ul. Nożownicza 40"
+	},
+	{
+		"name": "Nietota",
+		"location": {
+			"lat": 51.1077071,
+			"lng": 17.0316333
+		},
+		"category": "pub",
+		"address": " ul. Kazimierza Wielkiego 50"
+	},
+	{
+		"name": "Novotel Wrocław Centrum",
+		"location": {
+			"lat": 51.0981983,
+			"lng": 17.0244319
+		},
+		"category": "hotel",
+		"address": " ul. Powstańców Śląskich 7-7b"
+	},
+	{
+		"name": "OGIEŃ pizza rzemieślnicza",
+		"location": {
+			"lat": 51.1195927,
+			"lng": 17.0316422
+		},
+		"category": "restaurant",
+		"address": " ul. Pomorska 39"
+	},
+	{
+		"name": "OK Wine Bar",
+		"location": {
+			"lat": 51.114826,
+			"lng": 17.031805
+		},
+		"category": "pub",
+		"address": " ul. Szewska 59"
+	},
+	{
+		"name": "Oregano",
+		"location": {
+			"lat": 51.0997821,
+			"lng": 17.030475
+		},
+		"category": "restaurant",
+		"address": " ul. Bogusławskiego 101"
+	},
+	{
+		"name": "Oświetlenie - sklep z lampami",
+		"location": {
+			"lat": 51.1095812,
+			"lng": 16.9989405
+		},
+		"category": "shop",
+		"address": " ul. Piłsudskiego 44"
+	},
+	{
+		"name": "OZIMA chleb &amp; pizza",
+		"location": {
+			"lat": 51.1333559,
+			"lng": 17.0311477
+		},
+		"category": "restaurant",
+		"address": " ul. Piesza 8<strong> </strong>"
+	},
+	{
+		"name": "Pan od rowerów",
+		"location": {
+			"lat": 51.1239859,
+			"lng": 17.048177
+		},
+		"category": "shop",
+		"address": " ul. Nowowiejska 26"
+	},
+	{
+		"name": "Pan Pablo - Autorski Sklep z Butami",
+		"location": {
+			"lat": 51.1016657,
+			"lng": 17.0283744
+		},
+		"category": "shop",
+		"address": " ul. Piłsudskiego 52"
+	},
+	{
+		"name": "PANATO Cafe",
+		"location": {
+			"lat": 51.1196,
+			"lng": 17.0384569
+		},
+		"category": "cafe",
+		"address": " ul. Jedności Narodowej 68 A"
+	},
+	{
+		"name": "Parrot Coffee",
+		"location": {
+			"lat": 51.1175551,
+			"lng": 17.0417449
+		},
+		"category": "cafe",
+		"address": " pl. Bema 2"
+	},
+	{
+		"name": "PaSa Bistro",
+		"location": {
+			"lat": 51.1128642,
+			"lng": 17.0559208
+		},
+		"category": "restaurant",
+		"address": " ul. Szczytnicka 54/1D"
+	},
+	{
+		"name": "Pasaż Grunwaldzki",
+		"location": {
+			"lat": 51.1129426,
+			"lng": 17.0591226
+		},
+		"category": "shop",
+		"address": " plac Grunwaldzki 22"
+	},
+	{
+		"name": "Pepik Pub",
+		"location": {
+			"lat": 51.1108305,
+			"lng": 17.0292442
+		},
+		"category": "pub",
+		"address": " ul. Kiełbaśnicza 28/2"
+	},
+	{
+		"name": "Piątka Biuroserwis",
+		"location": {
+			"lat": 51.106196,
+			"lng": 17.111009
+		},
+		"category": "other",
+		"address": " ul. Bacciarellego 4B"
+	},
+	{
+		"name": "Pieczona Papryka",
+		"location": {
+			"lat": 51.12508750000001,
+			"lng": 17.0565691
+		},
+		"category": "restaurant",
+		"address": " ul. Księdza Konstantego Damrota 33B"
+	},
+	{
+		"name": "PIN Workshop - Przestrzeń dla majsterkowiczów",
+		"location": {
+			"lat": 51.1165279,
+			"lng": 17.0773943
+		},
+		"category": "other",
+		"address": " al. Ludomira Różyckiego 1C"
+	},
+	{
+		"name": "Piwiarnia Pijna Sprawa",
+		"location": {
+			"lat": 51.1168995,
+			"lng": 17.032853
+		},
+		"category": "pub",
+		"address": " ul. Stanisława Dubois 4/LU3"
+	},
+	{
+		"name": "Piwoteka",
+		"location": {
+			"lat": 51.12540629999999,
+			"lng": 17.0497098
+		},
+		"category": "shop",
+		"address": " ul. Daszyńskiego 19/1"
+	},
+	{
+		"name": "Pizza Si",
+		"location": {
+			"lat": 51.0999475,
+			"lng": 17.0298801
+		},
+		"category": "restaurant",
+		"address": " ul. Bogusławskiego 89"
+	},
+	{
+		"name": "Pizzeria Bunga",
+		"location": {
+			"lat": 51.1198608,
+			"lng": 17.0322912
+		},
+		"category": "restaurant",
+		"address": " ul. Rydygiera 34"
+	},
+	{
+		"name": "Pizzeria Capratti",
+		"location": {
+			"lat": 51.0631804,
+			"lng": 16.9773785
+		},
+		"category": "restaurant",
+		"address": " ul. Czekoladowa 43"
+	},
+	{
+		"name": "Pizzeria Kossa",
+		"location": {
+			"lat": 51.137776,
+			"lng": 16.970813
+		},
+		"category": "restaurant",
+		"address": " ul. Dzielna 1"
+	},
+	{
+		"name": "Pizzeria Lido",
+		"location": {
+			"lat": 51.1374889,
+			"lng": 16.9801119
+		},
+		"category": "restaurant",
+		"address": " ul. Dziadoszańska 48/50"
+	},
+	{
+		"name": "Pizzeria Piekielny Kupiec",
+		"location": {
+			"lat": 51.1106722,
+			"lng": 17.0329471
+		},
+		"category": "restaurant",
+		"address": " Rynek 46/47"
+	},
+	{
+		"name": "Pizzeria Simon",
+		"location": {
+			"lat": 51.1356932,
+			"lng": 17.0242725
+		},
+		"category": "restaurant",
+		"address": " ul.Jugosłowiańska 65a"
+	},
+	{
+		"name": "Pizzeria Zajawka",
+		"location": {
+			"lat": 51.1413813,
+			"lng": 17.0617974
+		},
+		"category": "restaurant",
+		"address": " ul. Koszarowa 32a"
+	},
+	{
+		"name": "PM Rider sklep rowerowy",
+		"location": {
+			"lat": 51.1097647,
+			"lng": 16.9680416
+		},
+		"category": "shop",
+		"address": " ul. Szkocka 1"
+	},
+	{
+		"name": "PM Rider sklep rowerowy",
+		"location": {
+			"lat": 51.099775,
+			"lng": 17.026572
+		},
+		"category": "shop",
+		"address": " ul. Powstańców Śląskich 5"
+	},
+	{
+		"name": "Pobite Gary Zupy",
+		"location": {
+			"lat": 51.1095778,
+			"lng": 17.0643386
+		},
+		"category": "restaurant",
+		"address": " ul. Curie Skłodowskiej 63"
+	},
+	{
+		"name": "Pociąg",
+		"location": {
+			"lat": 51.10007539999999,
+			"lng": 17.0294268
+		},
+		"category": "pub",
+		"address": " ul. Bogusławskiego 77"
+	},
+	{
+		"name": "Pod Gryfami",
+		"location": {
+			"lat": 51.1107338,
+			"lng": 17.0305367
+		},
+		"category": "restaurant",
+		"address": " Rynek 2"
+	},
+	{
+		"name": "Polskie Restauracje Sp. z o.o. \"Smakowirówka\"",
+		"location": {
+			"lat": 51.0319991,
+			"lng": 17.1508568
+		},
+		"category": "restaurant",
+		"address": " ul. Jana Pawła II 25 b"
+	},
+	{
+		"name": "Pomiędzy Cafe &amp; Bistro",
+		"location": {
+			"lat": 51.1167101,
+			"lng": 17.0331356
+		},
+		"category": "cafe",
+		"address": " ul. Dubois 2"
+	},
+	{
+		"name": "Newport Cafe",
+		"location": {
+			"lat": 51.111287,
+			"lng": 17.1180279
+		},
+		"category": "cafe",
+		"address": " ul. Marca Polo 23"
+	},
+	{
+		"name": "Newport Cafe Magellana",
+		"location": {
+			"lat": 51.111901,
+			"lng": 17.1214199
+		},
+		"category": "cafe",
+		"address": " ul. Ferdynanda Magellana 21"
+	},
+	{
+		"name": "Positive Day",
+		"location": {
+			"lat": 51.1005829,
+			"lng": 17.0271215
+		},
+		"category": "pub",
+		"address": " ul. Bogusławskiego 41"
+	},
+	{
+		"name": "Powinno - sklep z winem",
+		"location": {
+			"lat": 51.1374011,
+			"lng": 17.0558272
+		},
+		"category": "shop",
+		"address": " pl. Piłsudskiego 7"
+	},
+	{
+		"name": "Pracowania \"Złoto\" Maciej Słuczan-Orkusz",
+		"location": {
+			"lat": 51.0972981,
+			"lng": 17.0042145
+		},
+		"category": "shop",
+		"address": " ul. Grochowa 17/23"
+	},
+	{
+		"name": "Pracownia Artystyczna Nature Concept",
+		"location": {
+			"lat": 51.124638,
+			"lng": 17.0286918
+		},
+		"category": "other",
+		"address": " ul. Walecznych 13"
+	},
+	{
+		"name": "Pracownia krawiecka \"Stefcia\"",
+		"location": {
+			"lat": 51.06746099999999,
+			"lng": 17.08051
+		},
+		"category": "shop",
+		"address": " ul. Pionierów 8"
+	},
+	{
+		"name": "Prawdziwe Lody",
+		"location": {
+			"lat": 51.08655659999999,
+			"lng": 17.0129594
+		},
+		"category": "cafe",
+		"address": " ul. Świdnicka 30/32"
+	},
+	{
+		"name": "Przestrzeń",
+		"location": {
+			"lat": 51.1137805,
+			"lng": 17.0910989
+		},
+		"category": "pub",
+		"address": " al. Paderewskiego 35"
+	},
+	{
+		"name": "PUBliczny",
+		"location": {
+			"lat": 51.1100536,
+			"lng": 17.0273235
+		},
+		"category": "pub",
+		"address": " ul. Ruska 58/59"
+	},
+	{
+		"name": "Pub Nierówno Pod Sufitem",
+		"location": {
+			"lat": 51.100768,
+			"lng": 17.026731
+		},
+		"category": "pub",
+		"address": " ul. Bogusławskiego 34"
+	},
+	{
+		"name": "Pub za drzwiami",
+		"location": {
+			"lat": 51.100203,
+			"lng": 17.0288955
+		},
+		"category": "pub",
+		"address": " ul. Bogusławskiego 65"
+	},
+	{
+		"name": "Puro Hotel Wrocław",
+		"location": {
+			"lat": 51.1079917,
+			"lng": 17.0248927
+		},
+		"category": "hotel",
+		"address": " ul. Włodkowica 6"
+	},
+	{
+		"name": "Qubus Hotel Wrocław",
+		"location": {
+			"lat": 51.1090686,
+			"lng": 17.0351601
+		},
+		"category": "hotel",
+		"address": " św. Marii Magdaleny 2"
+	},
+	{
+		"name": "Rachunkowość i Doradztwo Dębowska",
+		"location": {
+			"lat": 51.10071629999999,
+			"lng": 17.114292
+		},
+		"category": "other",
+		"address": " ul. Olszewskiego 155"
+	},
+	{
+		"name": "Radio Taxi Expres",
+		"location": {
+			"lat": 51.1244296,
+			"lng": 16.9972525
+		},
+		"category": "other",
+		"address": " ul. Jelenia 24"
+	},
+	{
+		"name": "RegioFood",
+		"location": {
+			"lat": 51.07604,
+			"lng": 17.044622
+		},
+		"category": "restaurant",
+		"address": " ul. Dzierżoniowska 7/1a"
+	},
+	{
+		"name": "Rejs Pub",
+		"location": {
+			"lat": 51.1118591,
+			"lng": 17.0322033
+		},
+		"category": "pub",
+		"address": " ul. Kotlarska 32a"
+	},
+	{
+		"name": "Remont Bar",
+		"location": {
+			"lat": 51.1114858,
+			"lng": 17.0586093
+		},
+		"category": "pub",
+		"address": " pl.Grunwaldzki 18-20"
+	},
+	{
+		"name": "Reprotechnika Wrocław",
+		"location": {
+			"lat": 51.102295,
+			"lng": 17.0233369
+		},
+		"category": "other",
+		"address": " ul. Piłsudskiego 23"
+	},
+	{
+		"name": "Restauracja - Browar Bierhale",
+		"location": {
+			"lat": 51.1101798,
+			"lng": 17.0329508
+		},
+		"category": "restaurant, pub",
+		"address": " Rynek - Ratusz 26"
+	},
+	{
+		"name": "Restauracja \"Wok in\"",
+		"location": {
+			"lat": 51.1098949,
+			"lng": 17.0322992
+		},
+		"category": "restaurant",
+		"address": " Sukiennice 1-2/1A"
+	},
+	{
+		"name": "Restauracja Ceska",
+		"location": {
+			"lat": 51.1078459,
+			"lng": 17.0327859
+		},
+		"category": "restaurant, pub",
+		"address": " ul. Świdnicka 8a"
+	},
+	{
+		"name": "Restauracja Drevny Kocur",
+		"location": {
+			"lat": 51.1079369,
+			"lng": 17.0425995
+		},
+		"category": "restaurant",
+		"address": " ul. Podwale 83"
+	},
+	{
+		"name": "Restauracja GRECO",
+		"location": {
+			"lat": 51.1094219,
+			"lng": 17.0307863
+		},
+		"category": "restaurant",
+		"address": " Rynek 15"
+	},
+	{
+		"name": "Restauracja GRECO w CH Korona",
+		"location": {
+			"lat": 51.14228019999999,
+			"lng": 17.0888918
+		},
+		"category": "restaurant",
+		"address": " ul. Krzywoustego 126"
+	},
+	{
+		"name": "Restauracja GRECO w CH Wroclavia",
+		"location": {
+			"lat": 51.0962586,
+			"lng": 17.033942
+		},
+		"category": "restaurant",
+		"address": " ul. Sucha 1"
+	},
+	{
+		"name": "Restauracja Gruzińska Chinkalnia",
+		"location": {
+			"lat": 51.11,
+			"lng": 17.0320833
+		},
+		"category": "restaurant",
+		"address": " Sukiennice 3/4"
+	},
+	{
+		"name": "Restauracja indyjska New Delhi",
+		"location": {
+			"lat": 51.1005713,
+			"lng": 17.0272395
+		},
+		"category": "restaurant",
+		"address": " ul. Bogusławskiego 43"
+	},
+	{
+		"name": "Restauracja indyjska Thali",
+		"location": {
+			"lat": 51.1105499,
+			"lng": 17.026053
+		},
+		"category": "restaurant",
+		"address": " ul. Ruska 19"
+	},
+	{
+		"name": "Restauracja indyjska Thali",
+		"location": {
+			"lat": 51.11206,
+			"lng": 17.057097
+		},
+		"category": "restaurant",
+		"address": " ul. Curie-Skłodowskiej 5"
+	},
+	{
+		"name": "Restauracja indyjska Thali",
+		"location": {
+			"lat": 51.126265,
+			"lng": 17.047804
+		},
+		"category": "restaurant",
+		"address": " ul. Jedności Narodowej 161"
+	},
+	{
+		"name": "Restauracja indyjska Thali Garden",
+		"location": {
+			"lat": 51.1105499,
+			"lng": 17.026053
+		},
+		"category": "restaurant",
+		"address": " ul. Ruska 20-21"
+	},
+	{
+		"name": "Restauracja Inspiracja",
+		"location": {
+			"lat": 51.1089675,
+			"lng": 17.0295088
+		},
+		"category": "restaurant",
+		"address": " pl. Solny 16"
+	},
+	{
+		"name": "Restauracja Kaczka Dziwaczka.Pl",
+		"location": {
+			"lat": 51.1034549,
+			"lng": 17.0387691
+		},
+		"category": "restaurant",
+		"address": " ul. Podwale 62"
+	},
+	{
+		"name": "Restauracja Korba Kuchnia",
+		"location": {
+			"lat": 51.1117267,
+			"lng": 17.0267362
+		},
+		"category": "restaurant",
+		"address": " ul. św. Mikołaja 18-20"
+	},
+	{
+		"name": "Restauracja Kukmania Port",
+		"location": {
+			"lat": 51.0602017,
+			"lng": 17.0038453
+		},
+		"category": "restaurant",
+		"address": " ul. Ferdynanda Magellana 21a"
+	},
+	{
+		"name": "Restauracja La Scala",
+		"location": {
+			"lat": 51.11013759999999,
+			"lng": 17.0334333
+		},
+		"category": "restaurant",
+		"address": " Rynek 38"
+	},
+	{
+		"name": "Restauracja Mango Mama",
+		"location": {
+			"lat": 51.120867,
+			"lng": 17.041576
+		},
+		"category": "restaurant",
+		"address": " ul. Jedności Narodowej 77"
+	},
+	{
+		"name": "Restauracja Menu Motto",
+		"location": {
+			"lat": 51.0911074,
+			"lng": 17.0443155
+		},
+		"category": "restaurant",
+		"address": " ul. Hubska 54"
+	},
+	{
+		"name": "Restauracja MIKI",
+		"location": {
+			"lat": 51.10411389999999,
+			"lng": 17.1507459
+		},
+		"category": "restaurant",
+		"address": " ul. Włościańska 65"
+	},
+	{
+		"name": "Restauracja NABE",
+		"location": {
+			"lat": 51.126694,
+			"lng": 16.966726
+		},
+		"category": "restaurant",
+		"address": " ul. Bulwar Dedala 12a"
+	},
+	{
+		"name": "Restauracja Odlotowa",
+		"location": {
+			"lat": 51.12593200000001,
+			"lng": 16.9586409
+		},
+		"category": "restaurant",
+		"address": " ul. Skrzydlata 16"
+	},
+	{
+		"name": "Restauracja Pan Fisz",
+		"location": {
+			"lat": 51.12394,
+			"lng": 16.9726073
+		},
+		"category": "restaurant",
+		"address": " ul. Horbaczewskiego 29D"
+	},
+	{
+		"name": "Restauracja Panda Sushi",
+		"location": {
+			"lat": 51.109979,
+			"lng": 16.9616189
+		},
+		"category": "restaurant",
+		"address": " ul. Szwedzka 17D"
+	},
+	{
+		"name": "Restauracja Pha Tha Thai",
+		"location": {
+			"lat": 51.1120302,
+			"lng": 17.0323726
+		},
+		"category": "restaurant",
+		"address": " ul. Wiezięnna 5b"
+	},
+	{
+		"name": "Restauracja pod Kogutem",
+		"location": {
+			"lat": 51.0751319,
+			"lng": 17.08661
+		},
+		"category": "restaurant",
+		"address": " ul. Opolska 93"
+	},
+	{
+		"name": "Restauracja Pronto Pizza &amp; Trattoria",
+		"location": {
+			"lat": 51.11365989999999,
+			"lng": 17.0339329
+		},
+		"category": "restaurant",
+		"address": " pl. Uniwersytecki 9"
+	},
+	{
+		"name": "Restauracja Przystań",
+		"location": {
+			"lat": 51.11477989999999,
+			"lng": 17.0327993
+		},
+		"category": "restaurant",
+		"address": " ul. Księcia Witolda 2"
+	},
+	{
+		"name": "Restauracja Przystań Tu. Bistro&amp;Wine.",
+		"location": {
+			"lat": 51.058279,
+			"lng": 17.013575
+		},
+		"category": "restaurant",
+		"address": " ul. Zwycięska 20a"
+	},
+	{
+		"name": "Restauracja Siesta Trattoria",
+		"location": {
+			"lat": 51.0853128,
+			"lng": 17.0375125
+		},
+		"category": "restaurant",
+		"address": " ul. Śliczna 22a/5"
+	},
+	{
+		"name": "Restauracja Sukiennice 7",
+		"location": {
+			"lat": 51.110134,
+			"lng": 17.031312
+		},
+		"category": "restaurant",
+		"address": " Sukiennice 7"
+	},
+	{
+		"name": "Restauracja Sushi Corner Południe",
+		"location": {
+			"lat": 51.126694,
+			"lng": 16.966726
+		},
+		"category": "restaurant",
+		"address": " ul. Bulwar Dedala 12a"
+	},
+	{
+		"name": "Restauracja TAKI Ramen",
+		"location": {
+			"lat": 51.1189435,
+			"lng": 17.0585936
+		},
+		"category": "restaurant",
+		"address": " ul. Nowowiejska 94"
+	},
+	{
+		"name": "Restauracja Tu i Teraz",
+		"location": {
+			"lat": 51.108517,
+			"lng": 17.020295
+		},
+		"category": "restaurant",
+		"address": " pl. Orląt Lwowskich 2"
+	},
+	{
+		"name": "Restauracja Vincent",
+		"location": {
+			"lat": 51.1107586,
+			"lng": 17.0237909
+		},
+		"category": "restaurant",
+		"address": " ul. Ruska 39"
+	},
+	{
+		"name": "Restauracja&nbsp;Yakitori",
+		"location": {
+			"lat": 51.1115826,
+			"lng": 17.02606
+		},
+		"category": "restaurant",
+		"address": " ul. Św. Mikołaja 13"
+	},
+	{
+		"name": "Romdom-3 sp. z o.o.",
+		"location": {
+			"lat": 51.0918781,
+			"lng": 16.9871939
+		},
+		"category": "other",
+		"address": " al. Gen. Józefa Hallera 149"
+	},
+	{
+		"name": "RoweryStylowe.pl - sklep i bar",
+		"location": {
+			"lat": 51.101732,
+			"lng": 17.029194
+		},
+		"category": "pub, shop",
+		"address": " ul. Świdnicka 49"
+	},
+	{
+		"name": "Salon DlaSpania",
+		"location": {
+			"lat": 51.13554449999999,
+			"lng": 17.0800627
+		},
+		"category": "shop",
+		"address": " ul. Brucknera 32-34"
+	},
+	{
+		"name": "Salon DlaSpania",
+		"location": {
+			"lat": 51.049267,
+			"lng": 16.959302
+		},
+		"category": "shop",
+		"address": " ul. Czekoladowa 7-9"
+	},
+	{
+		"name": "Salon DlaSpania",
+		"location": {
+			"lat": 51.110585,
+			"lng": 17.013989
+		},
+		"category": "shop",
+		"address": " ul. Braniborska 14"
+	},
+	{
+		"name": "Salon Fryzjerko kosmetyczny Inspiracje",
+		"location": {
+			"lat": 51.1072321,
+			"lng": 17.0361733
+		},
+		"category": "other",
+		"address": " ul. K. Wielkiego 77/1a"
+	},
+	{
+		"name": "Salon Time Trend Pasaż Grunwaldzki",
+		"location": {
+			"lat": 51.1127153,
+			"lng": 17.0595936
+		},
+		"category": "shop",
+		"address": " pl. Grunwaldzki 22"
+	},
+	{
+		"name": "Salon Wrocławski",
+		"location": {
+			"lat": 51.099993,
+			"lng": 17.044233
+		},
+		"category": "other",
+		"address": " ul. Kościuszki 111/2U"
+	},
+	{
+		"name": "Sanatorium Kultury",
+		"location": {
+			"lat": 51.1101842,
+			"lng": 17.0327085
+		},
+		"category": "other",
+		"address": " Przejście Garncarskie 2"
+	},
+	{
+		"name": "Sarah",
+		"location": {
+			"lat": 51.10819799999999,
+			"lng": 17.0252539
+		},
+		"category": "restaurant",
+		"address": " ul. Włodkowica 5"
+	},
+	{
+		"name": "Seafood Bar&amp;Market",
+		"location": {
+			"lat": 51.1115709,
+			"lng": 17.0264259
+		},
+		"category": "restaurant, shop",
+		"address": " ul. Św. Mikołaja 12"
+	},
+	{
+		"name": "Sektor 3 – Wrocławskie Centrum Wspierania Organizacji Pozarządowych",
+		"location": {
+			"lat": 51.12714440000001,
+			"lng": 16.9823298
+		},
+		"category": "other",
+		"address": " ul. Legnicka 65"
+	},
+	{
+		"name": "Sergio Mandini Pizzeria",
+		"location": {
+			"lat": 51.10052899999999,
+			"lng": 17.0275436
+		},
+		"category": "restaurant",
+		"address": " ul. Bogusławskiego 47"
+	},
+	{
+		"name": "SHUKRAN Kebab",
+		"location": {
+			"lat": 51.1604246,
+			"lng": 17.1349463
+		},
+		"category": "restaurant",
+		"address": " ul. Zatorska 60A/L4"
+	},
+	{
+		"name": "Shrimp House",
+		"location": {
+			"lat": 51.0583033,
+			"lng": 17.011271
+		},
+		"category": "restaurant",
+		"address": "&nbsp;ul. Zwycięska 20A</span>"
+	},
+	{
+		"name": "Sielanka",
+		"location": {
+			"lat": 51.1001823,
+			"lng": 17.0289857
+		},
+		"category": "restaurant",
+		"address": " ul. Bogusławskiego 67"
+	},
+	{
+		"name": "Sklep Dyńka",
+		"location": {
+			"lat": 51.1122318,
+			"lng": 16.9593072
+		},
+		"category": "shop",
+		"address": " ul. Roosvelta 11"
+	},
+	{
+		"name": "Sklep Happy-Pet",
+		"location": {
+			"lat": 51.0742244,
+			"lng": 16.9932403
+		},
+		"category": "shop",
+		"address": " ul. Południowa 1/1a"
+	},
+	{
+		"name": "Sklep Konrad",
+		"location": {
+			"lat": 51.087962,
+			"lng": 17.0080749
+		},
+		"category": "shop",
+		"address": " ul. Słowicza 19"
+	},
+	{
+		"name": "Sklep mięsny Dworecki",
+		"location": {
+			"lat": 51.11916919999999,
+			"lng": 17.0399415
+		},
+		"category": "shop",
+		"address": " ul. Jana Kilińskiego 25"
+	},
+	{
+		"name": "Sklep Mr. Fox - Animal Concept&nbsp; Store",
+		"location": {
+			"lat": 51.118332,
+			"lng": 17.035512
+		},
+		"category": "shop",
+		"address": " ul. W. Łokietka 7"
+	},
+	{
+		"name": "Sklep odzieżowy RÖD",
+		"location": {
+			"lat": 51.1238559,
+			"lng": 17.043277
+		},
+		"category": "shop",
+		"address": " ul. Słowiańska 33 a"
+	},
+	{
+		"name": "Sklep plastyczny Tinta Colores",
+		"location": {
+			"lat": 51.1062302,
+			"lng": 17.0384819
+		},
+		"category": "shop",
+		"address": " ul. Piotra Skarki 23/1"
+	},
+	{
+		"name": "Sklep Tyci tyci",
+		"location": {
+			"lat": 51.1160056,
+			"lng": 16.9978373
+		},
+		"category": "shop",
+		"address": " ul. Szparagowa 8/11"
+	},
+	{
+		"name": "Sklep z oświetleniem ELEKTRO-MAT 2",
+		"location": {
+			"lat": 51.126265,
+			"lng": 17.047804
+		},
+		"category": "shop",
+		"address": " ul. Jedności Narodowej 161/163"
+	},
+	{
+		"name": "Sklep zoologiczny Galago",
+		"location": {
+			"lat": 51.0857811,
+			"lng": 17.0445666
+		},
+		"category": "shop",
+		"address": " ul. Widna 1"
+	},
+	{
+		"name": "Sklepik Osiedlowy Hieronim Szydłowski",
+		"location": {
+			"lat": 51.12341,
+			"lng": 17.0577541
+		},
+		"category": "shop",
+		"address": " ul. Damrota 53/6"
+	},
+	{
+		"name": "Słodkie figle – kawiarnia",
+		"location": {
+			"lat": 51.14713099999999,
+			"lng": 16.936202
+		},
+		"category": "cafe",
+		"address": " cukiernia"
+	},
+	{
+		"name": "Smacznego",
+		"location": {
+			"lat": 51.12759089999999,
+			"lng": 17.0361851
+		},
+		"category": "restaurant",
+		"address": " ul. Trzebnicka 58"
+	},
+	{
+		"name": "So! Coffee",
+		"location": {
+			"lat": 51.108908,
+			"lng": 17.0326
+		},
+		"category": "cafe",
+		"address": " ul. Świdnicka 1"
+	},
+	{
+		"name": "Soczewka",
+		"location": {
+			"lat": 51.1092784,
+			"lng": 17.0316594
+		},
+		"category": "restaurant",
+		"address": " Rynek 20/22"
+	},
+	{
+		"name": "Speakeasy",
+		"location": {
+			"lat": 51.110057,
+			"lng": 17.030248
+		},
+		"category": "restaurant",
+		"address": " Rynek 8"
+	},
+	{
+		"name": "Stacja Pasibus",
+		"location": {
+			"lat": 51.1078096,
+			"lng": 17.0322245
+		},
+		"category": "restaurant",
+		"address": " ul. Świdnicka 11"
+	},
+	{
+		"name": "Starbucks Coffee",
+		"location": {
+			"lat": 51.101487,
+			"lng": 17.029667
+		},
+		"category": "cafe",
+		"address": " ul. Piłsudskiego 58/1b"
+	},
+	{
+		"name": "Statek Zielona Tara",
+		"location": {
+			"lat": 51.1161092,
+			"lng": 17.0375204
+		},
+		"category": "restaurant",
+		"address": " Wyspa Słodowa"
+	},
+	{
+		"name": "Stockholm Eat &amp; Drink",
+		"location": {
+			"lat": 51.101367,
+			"lng": 17.0260163
+		},
+		"category": "restaurant",
+		"address": " ul. Piłsudskiego 49/57"
+	},
+	{
+		"name": "Studio Optyczne Wita Stwosza 13",
+		"location": {
+			"lat": 51.1098042,
+			"lng": 17.0363124
+		},
+		"category": "shop",
+		"address": " ul. Wita Stwosza 13"
+	},
+	{
+		"name": "Studio Urody \"Nożyczki i Pędzelek\"",
+		"location": {
+			"lat": 51.114211,
+			"lng": 17.07322
+		},
+		"category": "other",
+		"address": " ul. Parkowa 44/1A"
+	},
+	{
+		"name": "Super Taxi",
+		"location": {
+			"lat": 51.0826965,
+			"lng": 17.0610641
+		},
+		"category": "other",
+		"address": " ul. Tarnogajska 11-13/319"
+	},
+	{
+		"name": "Sushi Rolka",
+		"location": {
+			"lat": 51.1125286,
+			"lng": 17.0344968
+		},
+		"category": "restaurant",
+		"address": " ul. Kuźnicza 25/1b"
+	},
+	{
+		"name": "Szkoła Językowa&nbsp;GERelis Elisabeth Schwigon&nbsp;The Language School of Wrocław/Biuro Tłumaczeń",
+		"location": {
+			"lat": 51.1081795,
+			"lng": 17.0341322
+		},
+		"category": "other",
+		"address": "&nbsp;ul. Oławska 27-29"
+	},
+	{
+		"name": "Szkoła Tańca New Quality",
+		"location": {
+			"lat": 51.1128973,
+			"lng": 17.0197337
+		},
+		"category": "other",
+		"address": " pl. Solidarności 1/3/5"
+	},
+	{
+		"name": "Szyciokawiarnia",
+		"location": {
+			"lat": 51.1156316,
+			"lng": 17.0514161
+		},
+		"category": "shop, cafe",
+		"address": " ul. Wyszyńskiego 39"
+	},
+	{
+		"name": "Ślepy Zaułek",
+		"location": {
+			"lat": 51.1082879,
+			"lng": 17.0261614
+		},
+		"category": "cafe, restaurant",
+		"address": " św. Antoniego 2/4"
+	},
+	{
+		"name": "Tacos Locos",
+		"location": {
+			"lat": 51.1163046,
+			"lng": 17.0329469
+		},
+		"category": "restaurant",
+		"address": " ul. Cybulskiego 1"
+	},
+	{
+		"name": "Tania Paczka",
+		"location": {
+			"lat": 51.1071201,
+			"lng": 17.0197533
+		},
+		"category": "shop",
+		"address": " ul. Józefa Piłsudskiego 2"
+	},
+	{
+		"name": "Towarzystwo Miłośników Wrocławia",
+		"location": {
+			"lat": 51.1111721,
+			"lng": 17.0307651
+		},
+		"category": "other",
+		"address": " ul. Odrzańska 39/40"
+	},
+	{
+		"name": "Tralalala Cafe &amp; Pizzeria",
+		"location": {
+			"lat": 51.1125212,
+			"lng": 17.0322963
+		},
+		"category": "cafe, restaurant",
+		"address": " ul. Więzienna 21"
+	},
+	{
+		"name": "Tutti Frutti",
+		"location": {
+			"lat": 51.1035653,
+			"lng": 17.0301447
+		},
+		"category": "restaurant",
+		"address": " pl. Kościuszki 1"
+	},
+	{
+		"name": "Urban Vegan",
+		"location": {
+			"lat": 51.1098893,
+			"lng": 17.0231943
+		},
+		"category": "shop",
+		"address": " św. Antoniego 35/1B"
+	},
+	{
+		"name": "Vanilla Frog",
+		"location": {
+			"lat": 51.0745416,
+			"lng": 17.0041455
+		},
+		"category": "shop",
+		"address": " ul. Wawrzyniaka 1"
+	},
+	{
+		"name": "Vinyl Cafe",
+		"location": {
+			"lat": 51.1117183,
+			"lng": 17.0326335
+		},
+		"category": "cafe",
+		"address": " ul. Kotlarska 35"
+	},
+	{
+		"name": "Vivere Italiano",
+		"location": {
+			"lat": 51.1083039,
+			"lng": 17.0321499
+		},
+		"category": "restaurant",
+		"address": " ul. Ofiar Oświęcimskich 21"
+	},
+	{
+		"name": "Wanilia Cafe",
+		"location": {
+			"lat": 51.1756737,
+			"lng": 16.9977194
+		},
+		"category": "cafe",
+		"address": " ul. Cynamonowa 10a"
+	},
+	{
+		"name": "Warka",
+		"location": {
+			"lat": 51.1079051,
+			"lng": 17.0327845
+		},
+		"category": "pub, restaurant",
+		"address": " ul. Świdnicka 8"
+	},
+	{
+		"name": "Warzywniak Pod Bilbordem",
+		"location": {
+			"lat": 51.1130958,
+			"lng": 17.0140283
+		},
+		"category": "shop",
+		"address": " ul. Legnicka 23-25"
+	},
+	{
+		"name": "Warzywniak Vegan Food &amp; Cafe",
+		"location": {
+			"lat": 51.1114038,
+			"lng": 17.0581398
+		},
+		"category": "shop",
+		"address": " pl. Grunwaldzki 18"
+	},
+	{
+		"name": "Warzywniak Vegan Food &amp; Cafe",
+		"location": {
+			"lat": 51.1114038,
+			"lng": 17.0581398
+		},
+		"category": "shop",
+		"address": " ul. Trzebnicka 12"
+	},
+	{
+		"name": "Wena Sex Shop",
+		"location": {
+			"lat": 51.10071689999999,
+			"lng": 17.0257855
+		},
+		"category": "shop",
+		"address": " ul. Bogusławskiego 28"
+	},
+	{
+		"name": "Więzienna Pub",
+		"location": {
+			"lat": 51.112443,
+			"lng": 17.0325649
+		},
+		"category": "pub",
+		"address": " ul. Więzienna 6"
+	},
+	{
+		"name": "Winners Steakhouse",
+		"location": {
+			"lat": 51.10812300000001,
+			"lng": 17.0250081
+		},
+		"category": "pub",
+		"address": " ul. Włodkowica 5"
+	},
+	{
+		"name": "Włodkowica 21",
+		"location": {
+			"lat": 51.1089977,
+			"lng": 17.0232075
+		},
+		"category": "restaurant",
+		"address": " ul. Włodkowica 21"
+	},
+	{
+		"name": "Prost",
+		"location": {
+			"lat": 51.150788,
+			"lng": 17.022751
+		},
+		"category": "pub, restaurant",
+		"address": " ul. Paprotna 4"
+	},
+	{
+		"name": "WRO Art Center",
+		"location": {
+			"lat": 51.1060236,
+			"lng": 17.032978
+		},
+		"category": "other",
+		"address": " ul. Widok 7"
+	},
+	{
+		"name": "WYŁOWIONE",
+		"location": {
+			"lat": 51.1105459,
+			"lng": 17.0249965
+		},
+		"category": "restaurant",
+		"address": " ul. Ruska 47/48"
+	},
+	{
+		"name": "Yemsetu",
+		"location": {
+			"lat": 51.1373995,
+			"lng": 17.0557212
+		},
+		"category": "restaurant",
+		"address": " pl. Marszałka Piłsudskiego 5"
+	},
+	{
+		"name": "Zakład Renowacji Kołder",
+		"location": {
+			"lat": 51.12406900000001,
+			"lng": 17.049142
+		},
+		"category": "other",
+		"address": " ul. Żeromskiego 54"
+	},
+	{
+		"name": "ZOO MAGAZYN",
+		"location": {
+			"lat": 51.0757464,
+			"lng": 17.006038
+		},
+		"category": "shop",
+		"address": " ul. Powstańców Śląskich 211/217"
+	},
+	{
+		"name": "ZZtop Wrocław - zupy i zapiekanki",
+		"location": {
+			"lat": 51.1085303,
+			"lng": 17.027143
+		},
+		"category": "restaurant",
+		"address": " ul. Kazimierza Wielkiego 25/1a"
+	},
+	{
+		"name": "ZZtop Wrocław - zupy i zapiekanki",
+		"location": {
+			"lat": 51.1085303,
+			"lng": 17.027143
+		},
+		"category": "restaurant",
+		"address": " ul. M. C. Skłodowskiej 11/1"
+	},
+	{
+		"name": "Biuro Warta Centrum",
+		"location": {
+			"lat": 51.109650,
+			"lng": 17.038170
+		},
+		"category": "other",
+		"address": " ul. Wita Stwosza 28/215"
+	},
+	{
+		"name": "Bułka z masłem",
+		"location": {
+			"lat": 51.108780,
+			"lng": 17.028760
+		},
+		"category": "restaurant",
+		"address": " ul. Karola Szajnochy 4"
+	},
+	{
+		"name": "Centrum Dietetyczne Naturhouse Piastowska",
+		"location": {
+			"lat": 51.114590,
+			"lng": 17.060360
+		},
+		"category": "shop, other",
+		"address": " ul. Piastowska 28"
+	},
+	{
+		"name": "Costa Coffee",
+		"location": {
+			"lat": 51.098910,
+			"lng": 17.036580
+		},
+		"category": "cafe",
+		"address": " ul. Piłsudskiego 105"
+	},
+	{
+		"name": "Cukiernia/kawiarnia A. Blikle",
+		"location": {
+			"lat": 51.110860,
+			"lng": 17.030270
+		},
+		"category": "cafe",
+		"address": " Rynek 2/lok. 1A"
+	},
+	{
+		"name": "Franz Kawka",
+		"location": {
+			"lat": 51.111260,
+			"lng": 17.032130
+		},
+		"category": "cafe",
+		"address": " ul. Więzienna 1-4/1c"
+	},
+	{
+		"name": "Hotel Cilantro B&amp;B",
+		"location": {
+			"lat": 51.120140,
+			"lng": 17.030310
+		},
+		"category": "hotel",
+		"address": " ul. Pomorska 32/26-29"
+	},
+	{
+		"name": "Hotel Scandic INMEDIO",
+		"location": {
+			"lat": 51.101490,
+			"lng": 17.027750
+		},
+		"category": "hotel",
+		"address": " ul. Piłsudskiego 49"
+	},
+	{
+		"name": "Kamienica Pub&amp;Cafe",
+		"location": {
+			"lat": 51.111560,
+			"lng": 17.033510
+		},
+		"category": "pub, cafe",
+		"address": " ul. Kotlarska 40"
+	},
+	{
+		"name": "Kocia Kołyska",
+		"location": {
+			"lat": 51.110500,
+			"lng": 17.030430
+		},
+		"category": "pub",
+		"address": " Rynek 5"
+	},
+	{
+		"name": "Lady Dunn",
+		"location": {
+			"lat": 51.053690,
+			"lng": 17.021370
+		},
+		"category": "shop",
+		"address": " ul. Zdrojowa 13"
+	},
+	{
+		"name": "Leroy Merlin",
+		"location": {
+			"lat": 51.108560,
+			"lng": 16.945400
+		},
+		"category": "shop",
+		"address": " ul. Graniczna 4"
+	},
+	{
+		"name": "Maxi Zoo - sklep dla zwierząt",
+		"location": {
+			"lat": 51.082640,
+			"lng": 17.049160
+		},
+		"category": "shop",
+		"address": " ul. Bardzka 3"
+	},
+	{
+		"name": "Mercado Latino",
+		"location": {
+			"lat": 51.104000,
+			"lng": 17.087400
+		},
+		"category": "cafe, shop",
+		"address": " ul. Zygmunta Wróblewskiego 31"
+	},
+	{
+		"name": "Mleczna Droga",
+		"location": {
+			"lat": 51.106420,
+			"lng": 17.043490
+		},
+		"category": "restaurant",
+		"address": " ul. Krasińskiego 32"
+	},
+	{
+		"name": "Orange Hostels",
+		"location": {
+			"lat": 51.114200,
+			"lng": 17.063510
+		},
+		"category": "hotel",
+		"address": " ul. Grunwaldzka 59"
+	},
+	{
+		"name": "Piekarnia - Cukiernia Kawiarnia Grabarczyk",
+		"location": {
+			"lat": 51.121490,
+			"lng": 17.060140
+		},
+		"category": "shop",
+		"address": " ul. Prusa 81"
+	},
+	{
+		"name": "Pizzeria Gruby Benek",
+		"location": {
+			"lat": 51.098890,
+			"lng": 17.050250
+		},
+		"category": "restaurant",
+		"address": " ul. Kościuszki 147"
+	},
+	{
+		"name": "Pracownia Złotnicza",
+		"location": {
+			"lat": 51.110200,
+			"lng": 17.032170
+		},
+		"category": "shop",
+		"address": " Przejście Garncarskie 4/6"
+	},
+	{
+		"name": "Restauracja GRECO",
+		"location": {
+			"lat": 51.110400,
+			"lng": 17.060800
+		},
+		"category": "restaurant",
+		"address": " ul. Marii Curie Skłodowskiej 33"
+	},
+	{
+		"name": "Restauracja Luk&amp;Ana",
+		"location": {
+			"lat": 51.083660,
+			"lng": 17.039560
+		},
+		"category": "restaurant",
+		"address": " Al. Armii Krajowej 14a/1"
+	},
+	{
+		"name": "Restauracja Malarska",
+		"location": {
+			"lat": 51.112590,
+			"lng": 17.031330
+		},
+		"category": "restaurant",
+		"address": " ul. Odrzańska 24/29"
+	},
+	{
+		"name": "Rock Burger",
+		"location": {
+			"lat": 51.111580,
+			"lng": 17.035510
+		},
+		"category": "restaurant",
+		"address": " ul. Szewska 27-27A"
+	},
+	{
+		"name": "Salon Fryzjerski Nena",
+		"location": {
+			"lat": 51.111270,
+			"lng": 17.034910
+		},
+		"category": "other",
+		"address": " ul. Kotlarska 43/1a"
+	},
+	{
+		"name": "Shrimp House",
+		"location": {
+			"lat": 51.111600,
+			"lng": 17.054900
+		},
+		"category": "restaurant",
+		"address": "ul. Wrocławczyka 37"
+	},
+	{
+		"name": "Shrimp House",
+		"location": {
+			"lat": 51.110240,
+			"lng": 17.035620
+		},
+		"category": "restaurant",
+		"address": "ul. Wita Stwosza 41"
+	},
+	{
+		"name": "Sklep z porcelaną",
+		"location": {
+			"lat": 51.102080,
+			"lng": 17.029360
+		},
+		"category": "shop",
+		"address": " ul. Świdnicka 45"
+	},
+	{
+		"name": "Sklep zoologiczny",
+		"location": {
+			"lat": 51.121684,
+			"lng": 17.036122
+		},
+		"category": "shop",
+		"address": " ul. Trzebnicka 12"
+	},
+	{
+		"name": "SmaczneGo",
+		"location": {
+			"lat": 51.111541,
+			"lng": 17.028600
+		},
+		"category": "restaurant, cafe",
+		"address": " Mikołaja 12"
+	},
+	{
+		"name": "Smacznego",
+		"location": {
+			"lat": 51.0973942,
+			"lng": 17.0554025
+		},
+		"category": "restaurant, cafe",
+		"address": " ul. Kościuszki 198"
+	},
+	{
+		"name": "Stacja Pasibus",
+		"location": {
+			"lat": 51.1094,
+			"lng": 17.06472
+		},
+		"category": "restaurant",
+		"address": " ul. Łukaszewicza 18"
+	},
+	{
+		"name": "Stacja Pasibus ",
+		"location": {
+			"lat": 51.09117,
+			"lng": 17.01571
+		},
+		"category": "restaurant",
+		"address": " ul. Powstańców Śląskich 5"
+	},
+	{
+		"name": "Tajemniczy Ogród",
+		"location": {
+			"lat": 51.10534,
+			"lng": 17.03256
+		},
+		"category": "restaurant",
+		"address": " pl. Teatralny 4"
+	},
+	{
+		"name": "The Mexican",
+		"location": {
+			"lat": 51.111152,
+			"lng": 17.034882
+		},
+		"category": "restaurant",
+		"address": " ul. Szewska 61/62 lok 1b"
+	},
+	{
+		"name": "Zupa",
+		"location": {
+			"lat": 51.11147,
+			"lng": 17.0318
+		},
+		"category": "restaurant",
+		"address": " ul. Igielna 14"
+	}
+]
+    </script>
+
+
+
+    <script type="application/javascript">
+        var Wikimedia = L.tileLayer('https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}{r}.png', {
+            attribution: '<a href="https://wikimediafoundation.org/wiki/Maps_Terms_of_Use">Wikimedia</a>',
+            minZoom: 1,
+            maxZoom: 19
+        });
+        var mymap = L.map('mapid', {
+            gestureHandling: true
+        }).setView([51.107883, 17.038538], 13);
+        Wikimedia.addTo(mymap);
+
+        var $placesEl = $('#places');
+        var $placeBtn = null;
+
+        var restaurantIcon = L.icon({
+            iconUrl: "{{asset '/images/marker-restaurant.png'}}",
+            iconSize: [38, 50],
+            iconAnchor: [19, 50],
+            popupAnchor: [0, -50]
+        });
+
+        var pubIcon = L.icon({
+            iconUrl: "{{asset '/images/marker-pub.png'}}",
+            iconSize: [38, 50],
+            iconAnchor: [19, 50],
+            popupAnchor: [0, -50]
+        });
+
+        var cafeIcon = L.icon({
+            iconUrl: "{{asset '/images/marker-cafe.png'}}",
+            iconSize: [38, 50],
+            iconAnchor: [19, 50],
+            popupAnchor: [0, -50]
+        });
+
+        var hotelIcon = L.icon({
+            iconUrl: "{{asset '/images/marker-hotel.png'}}",
+            iconSize: [38, 50],
+            iconAnchor: [19, 50],
+            popupAnchor: [0, -50]
+        });
+
+        var shopIcon = L.icon({
+            iconUrl: "{{asset '/images/marker-shop.png'}}",
+            iconSize: [38, 50],
+            iconAnchor: [19, 50],
+            popupAnchor: [0, -50]
+        });
+
+        var otherIcon = L.icon({
+            iconUrl: "{{asset '/images/marker-other.png'}}",
+            iconSize: [38, 50],
+            iconAnchor: [19, 50],
+            popupAnchor: [0, -50]
+        });
+
+        var categoryNames = {
+            pub: "Bar",
+            restaurant: "Restauracja",
+            cafe: "Kawiarnia",
+            shop: "Sklep",
+            hotel: "Hotel",
+            other: 'Inne'
+        };
+
+        var categoryIcon = null;
+        var categories;
+
+        window.places.forEach(place => {
+            place.categories = place.category.split(', ');
+
+            categories = place.categories.map(cat => categoryNames[cat]);
+
+
+            $placeBtn = $(`<liv class="place">
+
+                    <span class="category">${categories.join(', ')}</span>
+                    <br>
+                    <span class="name">${place.name}</span>
+                    <br>
+                    <span class="address">${place.address}</span>
+                    </li>`);
+                    
+            $placesEl.append($placeBtn);
+
+            if (place.recommended) {
+                $placeBtn.addClass('recommended')
+            }
+
+            if (place.categories[0] == 'restaurant') {
+                categoryIcon = restaurantIcon;
+            } else if (place.categories[0] == 'pub') {
+                categoryIcon = pubIcon;
+            } else if (place.categories[0] == 'hotel') {
+                categoryIcon = hotelIcon;
+            } else if (place.categories[0] == 'shop') {
+                categoryIcon = shopIcon;
+            } else if (place.categories[0] == 'cafe') {
+                categoryIcon = cafeIcon;
+            } else {
+                categoryIcon = otherIcon;
+            }
+
+            place.marker = L.marker([place.location.lat, place.location.lng],{
+                icon: categoryIcon
+            }).addTo(mymap);
+
+            place.el = $placeBtn;
+            place.visible = true;
+
+            place.popup = place.marker.bindPopup(place.name)
+
+
+            $placeBtn.on('click',function (evt) {
+                window.scrollTo(0, document.getElementById('mapid').offsetTop - 100);
+                mymap.setView(place.marker.getLatLng(),17)
+                place.popup.openPopup();
+            });
+        });
+
+        function dispatchFilters() {
+            var filters = $('.category-toggle.enabled').map(function () {
+                return $(this).data('filter')
+            });
+
+            filters = Array.prototype.slice.call( filters, 0 );
+            var toBeEnabled = [];
+            var toBeDisabled = [];
+
+            var enable = false;
+            window.places.forEach(function (place) {
+                enable = place.categories.some(function (category) {
+                    if (filters.includes(category)) {
+                        return true;
+                    }
+                });
+
+                if (enable && !place.visible) {
+                    place.marker.addTo(mymap);
+                    toBeEnabled.push(place);
+                } else if (!enable && place.visible) {
+                    place.marker.remove();
+                    toBeDisabled.push(place);
+                }
+            });
+
+            toBeDisabled.forEach(place => {
+                place.el.hide();
+                place.visible = false;
+            });
+            toBeEnabled.forEach(place => {
+                place.el.show();
+                place.visible = true;
+            })
+        }
+
+        $('.category-toggle').on('click', function (evt) {
+            $(this).toggleClass('enabled');
+            dispatchFilters();
+        });
+    </script>
+{{/contentFor}}
+
+

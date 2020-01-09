@@ -29,5 +29,8 @@
     "devDependencies": {
         "node-sass": "^4.13.0",
         "nodemon": "^1.19.4"
+    },
+    "dependencies": {
+        "json-format": "^1.0.1"
     }
 }
