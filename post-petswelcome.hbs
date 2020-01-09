@@ -34,6 +34,11 @@
         header {
             background: transparent url({{@site.cover_image}}) center bottom/cover repeat scroll;
         }
+#disqus_thread {
+    margin: auto;
+    padding: 100px 20px;
+    max-width: var(--secondary-width);
+}
 
 nav.topbar {
 z-index: 1999;
@@ -159,6 +164,7 @@ z-index: 1999;
                 </div>
             </article>
 
+    		{{> disqus}}
         <script type="application/javascript">
         window.places = [
         {
